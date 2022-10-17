@@ -15,11 +15,10 @@ func FailResponses(msg string) map[string]string {
 	}
 }
 
-type addUserRespons struct {
-	ID     uint   `json:"id"`
-	Name   string `json:"name"`
-	HP     string `json:"hp"`
-	Addres string `json:"addres"`
+type registerRespons struct {
+	ID    uint   `json:"id"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
 }
 
 type editUserRespons struct {
@@ -31,20 +30,12 @@ type editUserRespons struct {
 func ToResponse(core interface{}, code string) interface{} {
 	var res interface{}
 	switch code {
-	case "insert":
+	case "reg":
 		cnv := core.(domain.Core)
-		res = addUserRespons{ID: cnv.ID, Name: cnv.Name, HP: cnv.HP, Addres: cnv.Addres}
+		res = registerRespons{ID: cnv.ID, Name: cnv.Name, Email: cnv.Email}
 	case "edit":
 		cnv := core.(domain.Core)
-		res = editUserRespons{Name: cnv.Name, HP: cnv.HP, Addres: cnv.Addres}
-	case "all":
-		var arr []addUserRespons
-		cnv := core.([]domain.Core)
-		for _, val := range cnv {
-			arr = append(arr, addUserRespons{ID: val.ID, Name: val.Name, HP: val.HP, Addres: val.Addres})
-		}
-		res = arr
+		res = editUserRespons{Name: cnv.Name}
 	}
-
 	return res
 }
