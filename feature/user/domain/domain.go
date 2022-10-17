@@ -9,6 +9,7 @@ type Core struct {
 	Bio      string
 	Gender   string
 	Location string
+	Token    string
 }
 
 type Repository interface {

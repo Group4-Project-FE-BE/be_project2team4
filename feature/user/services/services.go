@@ -22,7 +22,6 @@ type repoService struct {
 // Register implements domain.Service
 func (rs *repoService) Register(newUser domain.Core) (domain.Core, error) {
 	generate, err := bcrypt.GenerateFromPassword([]byte(newUser.Password), bcrypt.DefaultCost)
-
 	if err != nil {
 		log.Error(err.Error())
 		return domain.Core{}, errors.New("cannot encript password")
@@ -45,7 +44,7 @@ func (rs *repoService) Register(newUser domain.Core) (domain.Core, error) {
 
 // Login implements domain.Service
 func (rs *repoService) Login(newUser domain.Core) (domain.Core, error) {
-	//var user domain.Core
+
 	res, err := rs.qry.GetUser(newUser)
 	if err != nil {
 		if strings.Contains(err.Error(), "table") {
@@ -60,6 +59,7 @@ func (rs *repoService) Login(newUser domain.Core) (domain.Core, error) {
 		log.Error(err.Error())
 		return domain.Core{}, errors.New("incorrect password")
 	}
+
 	return res, nil
 }
 

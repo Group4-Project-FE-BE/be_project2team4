@@ -21,6 +21,11 @@ type registerRespons struct {
 	Email string `json:"email"`
 }
 
+type loginResponses struct {
+	Name  string `json:"name"`
+	Token string `json:"token"`
+}
+
 type editUserRespons struct {
 	Name   string `json:"name"`
 	HP     string `json:"hp"`
@@ -33,6 +38,9 @@ func ToResponse(core interface{}, code string) interface{} {
 	case "reg":
 		cnv := core.(domain.Core)
 		res = registerRespons{ID: cnv.ID, Name: cnv.Name, Email: cnv.Email}
+	case "login":
+		cnv := core.(domain.Core)
+		res = loginResponses{Name: cnv.Name, Token: cnv.Token}
 	case "edit":
 		cnv := core.(domain.Core)
 		res = editUserRespons{Name: cnv.Name}

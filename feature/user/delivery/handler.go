@@ -52,6 +52,7 @@ func (us *userHandler) Login() echo.HandlerFunc {
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, FailResponses(err.Error()))
 		}
+
 		return c.JSON(http.StatusCreated, SuccessResponses("berhasil login", ToResponse(res, "login")))
 	}
 }
