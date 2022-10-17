@@ -1,12 +1,12 @@
 package main
 
 import (
+	"be_project2team4/config"
+	dUser "be_project2team4/feature/user/delivery"
+	rUser "be_project2team4/feature/user/repository"
+	sUser "be_project2team4/feature/user/services"
+	"be_project2team4/utils/database"
 	"log"
-	"userapi/config"
-	dUser "userapi/feature/user/delivery"
-	rUser "userapi/feature/user/repository"
-	sUser "userapi/feature/user/services"
-	"userapi/utils/database"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"

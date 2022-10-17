@@ -1,6 +1,6 @@
 package delivery
 
-import "userapi/feature/user/domain"
+import "be_project2team4/feature/user/domain"
 
 func SuccessResponses(msg string, data interface{}) map[string]interface{} {
 	return map[string]interface{}{

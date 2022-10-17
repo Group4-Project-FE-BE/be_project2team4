@@ -1,10 +1,10 @@
 package services
 
 import (
+	"be_project2team4/config"
+	"be_project2team4/feature/user/domain"
 	"errors"
 	"strings"
-	"userapi/config"
-	"userapi/feature/user/domain"
 
 	"github.com/labstack/gommon/log"
 	"gorm.io/gorm"

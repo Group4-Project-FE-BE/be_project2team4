@@ -1,8 +1,8 @@
 package database
 
 import (
-	"userapi/config"
-	rUser "userapi/feature/user/repository"
+	"be_project2team4/config"
+	rUser "be_project2team4/feature/user/repository"
 
 	"github.com/labstack/gommon/log"
 	"gorm.io/driver/mysql"

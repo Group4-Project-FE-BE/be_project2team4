@@ -1,11 +1,11 @@
 package services
 
 import (
+	"be_project2team4/config"
+	"be_project2team4/feature/user/domain"
+	"be_project2team4/mocks"
 	"errors"
 	"testing"
-	"userapi/config"
-	"userapi/feature/user/domain"
-	"userapi/mocks"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"

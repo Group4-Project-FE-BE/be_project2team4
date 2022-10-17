@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	domain "userapi/feature/user/domain"
+	domain "be_project2team4/feature/user/domain"
 
 	mock "github.com/stretchr/testify/mock"
 )

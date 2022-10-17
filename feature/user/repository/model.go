@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"userapi/feature/user/domain"
+	"be_project2team4/feature/user/domain"
 
 	"gorm.io/gorm"
 )
