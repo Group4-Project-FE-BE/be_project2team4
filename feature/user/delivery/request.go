@@ -1,6 +1,6 @@
 package delivery
 
-import "userapi/feature/user/domain"
+import "be_project2team4/feature/user/domain"
 
 type addUserFormat struct {
 	Name   string `json:"name" form:"name"`
