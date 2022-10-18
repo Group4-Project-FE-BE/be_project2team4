@@ -29,6 +29,7 @@ func (rq *repoQuery) Insert(newUser domain.Core) (domain.Core, error) {
 }
 
 // GetAll implements domain.Repository
+// get all user data to show user
 func (rq *repoQuery) GetAll() ([]domain.Core, error) {
 	var res []User
 	if err := rq.db.Find(&res).Error; err != nil {
