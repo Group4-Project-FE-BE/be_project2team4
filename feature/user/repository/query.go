@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"userapi/feature/user/domain"
+	"be_project2team4/feature/user/domain"
 
 	"github.com/labstack/gommon/log"
 	"gorm.io/gorm"
@@ -49,6 +49,7 @@ func (rq *repoQuery) Get(ID uint) (domain.Core, error) {
 }
 
 // Update implements domain.Repository
+// update user test
 func (rq *repoQuery) Update(updatedData domain.Core, ID uint) (domain.Core, error) {
 	var res User
 	if err := rq.db.First(&res, "id=?", res.ID).Error; err != nil {

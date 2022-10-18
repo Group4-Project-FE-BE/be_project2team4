@@ -1,33 +1,45 @@
 package repository
 
 import (
-	"userapi/feature/user/domain"
+	"be_project2team4/feature/user/domain"
 
 	"gorm.io/gorm"
 )
 
 type User struct {
 	gorm.Model
-	Name   string
-	HP     string
-	Addres string
+	Email    string
+	Password string
+	Name     string
+	Phone    string
+	Bio      string
+	Gender   string
+	Location string
 }
 
 func FromDomain(du domain.Core) User {
 	return User{
-		Model:  gorm.Model{ID: du.ID},
-		Name:   du.Name,
-		HP:     du.HP,
-		Addres: du.Addres,
+		Model:    gorm.Model{ID: du.ID},
+		Email:    du.Email,
+		Password: du.Password,
+		Name:     du.Name,
+		Phone:    du.Phone,
+		Bio:      du.Bio,
+		Gender:   du.Gender,
+		Location: du.Location,
 	}
 }
 
 func ToDomain(u User) domain.Core {
 	return domain.Core{
-		ID:     u.ID,
-		Name:   u.Name,
-		HP:     u.HP,
-		Addres: u.Addres,
+		ID:       u.ID,
+		Email:    u.Email,
+		Password: u.Password,
+		Name:     u.Name,
+		Phone:    u.Phone,
+		Bio:      u.Bio,
+		Gender:   u.Gender,
+		Location: u.Location,
 	}
 }
 
