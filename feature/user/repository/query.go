@@ -40,10 +40,10 @@ func (rq *repoQuery) GetAll() ([]domain.Core, error) {
 }
 
 // Get implements domain.Repository
-func (rq *repoQuery) Get(ID uint) (domain.Core, error) {
+func (rq *repoQuery) Get(Email string) (domain.Core, error) {
 	var res User
-	if err := rq.db.First(&res, "id =?", ID).Error; err != nil {
-		log.Error("error on getuserid", err.Error())
+	if err := rq.db.First(&res, "email =?", Email).Error; err != nil {
+		log.Error("error on getuseremail", err.Error())
 		return domain.Core{}, err
 	}
 	return ToDomain(res), nil
@@ -57,8 +57,12 @@ func (rq *repoQuery) Update(updatedData domain.Core, ID uint) (domain.Core, erro
 	}
 
 	res.Name = updatedData.Name
-	res.HP = updatedData.HP
+	res.Email = updatedData.Email
+	res.Phone = updatedData.Phone
 	res.Addres = updatedData.Addres
+	res.Bio = updatedData.Bio
+	res.Gender = updatedData.Gender
+	res.Location = updatedData.Location
 
 	if err := rq.db.Save(&res).Error; err != nil {
 		return domain.Core{}, err

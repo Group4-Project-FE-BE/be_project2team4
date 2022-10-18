@@ -12,17 +12,17 @@ type Core struct {
 }
 
 type Repository interface {
-	Insert(newUser Core) (Core, error)  //register
-	GetUser(Email string) (Core, error) //login
-	Update(updatedData Core, ID uint) (Core, error)
-	Get(ID uint) (Core, error)
-	Delete(ID uint) (Core, error)
+	Insert(newUser Core) (Core, error)              //register
+	GetUser(Email string) (Core, error)             //login
+	Update(updatedData Core, ID uint) (Core, error) //update/edit
+	Get(Email string) (Core, error)                 //get/find
+	Delete(ID uint) (Core, error)                   //delete
 }
 
 type Service interface {
 	Register(newUser Core) (Core, error)
 	Login(Email string) (Core, error)
 	UpdateProfile(updatedData Core, ID uint) (Core, error)
-	Profile(ID uint) (Core, error)
+	Profile(Email string) (Core, error)
 	DeleteProfile(ID uint) (Core, error)
 }
