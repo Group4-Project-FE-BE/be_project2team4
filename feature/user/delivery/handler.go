@@ -18,7 +18,7 @@ func New(e *echo.Echo, srv domain.Service) {
 
 	e.POST("/users", handler.AddUser())
 	e.GET("/users", handler.ShowAllUser())
-	e.GET("/users/:id", handler.Profile())
+	e.GET("/users/:email", handler.Profile())
 	e.PUT("/users/:id", handler.EditProfile())
 	e.DELETE("/users/:id", handler.DeleteUser())
 }
@@ -42,7 +42,7 @@ func (us *userHandler) AddUser() echo.HandlerFunc {
 
 func (us *userHandler) ShowAllUser() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		res, err := us.srv.ShowAllUser()
+		res, err := us.srv.GetAll()
 		if err != nil {
 			log.Error(err.Error())
 			return c.JSON(http.StatusInternalServerError, FailResponses(err.Error()))
@@ -53,8 +53,8 @@ func (us *userHandler) ShowAllUser() echo.HandlerFunc {
 
 func (us *userHandler) Profile() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		ID, err := strconv.Atoi(c.Param("id"))
-		res, err := us.srv.Profile(uint(ID))
+		ID, err := strconv.Atoi(c.Param("email"))
+		res, err := us.srv.Profile(string(ID))
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, FailResponses(err.Error()))
 		}
