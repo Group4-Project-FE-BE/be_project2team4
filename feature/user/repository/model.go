@@ -15,7 +15,6 @@ type User struct {
 	Bio      string
 	Gender   string
 	Location string
-	Token    string
 }
 
 func FromDomain(du domain.Core) User {
@@ -28,7 +27,6 @@ func FromDomain(du domain.Core) User {
 		Bio:      du.Bio,
 		Gender:   du.Bio,
 		Location: du.Location,
-		Token:    du.Token,
 	}
 }
 
@@ -42,7 +40,6 @@ func ToDomain(u User) domain.Core {
 		Bio:      u.Bio,
 		Gender:   u.Bio,
 		Location: u.Location,
-		Token:    u.Token,
 	}
 }
 

@@ -23,6 +23,9 @@ func ToDomain(i interface{}) domain.Core {
 	case RegisterFormat:
 		cnv := i.(RegisterFormat)
 		return domain.Core{Name: cnv.Name, Email: cnv.Email, Password: cnv.Password}
+	case LoginFormat:
+		cnv := i.(LoginFormat)
+		return domain.Core{Email: cnv.Email, Password: cnv.Password}
 		// case editUserFormat:
 		// 	cnv := i.(editUserFormat)
 		// 	return domain.Core{Name: cnv.Name, HP: cnv.HP, Addres: cnv.Addres}

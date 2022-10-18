@@ -2,7 +2,9 @@ package services
 
 import (
 	"be_project2team4/feature/user/domain"
+	"be_project2team4/utils/jwt"
 	"errors"
+	loggo "log"
 	"strings"
 
 	"github.com/labstack/gommon/log"
@@ -43,25 +45,49 @@ func (rs *repoService) Register(newUser domain.Core) (domain.Core, error) {
 }
 
 // Login implements domain.Service
-func (rs *repoService) Login(newUser domain.Core) (domain.Core, error) {
+func (rs *repoService) Login(email, password string) (domain.Core, string, error) {
 
-	res, err := rs.qry.GetUser(newUser)
-	if err != nil {
-		if strings.Contains(err.Error(), "table") {
-			return domain.Core{}, errors.New("database error")
-		} else if strings.Contains(err.Error(), "found") {
-			return domain.Core{}, errors.New("no data")
-		}
+	if strings.TrimSpace(email) == "" || strings.TrimSpace(password) == "" {
+		return domain.Core{}, "", errors.New("hp or password empty")
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(res.Password), []byte(newUser.Password))
+	res, err := rs.qry.GetUser(email)
 	if err != nil {
 		log.Error(err.Error())
-		return domain.Core{}, errors.New("incorrect password")
+		if strings.Contains(err.Error(), "table") {
+			return domain.Core{}, "", errors.New("Failed. Error database.")
+		} else if strings.Contains(err.Error(), "found") {
+			return domain.Core{}, "", errors.New("Failed. HP or Password not found.")
+		} else {
+			return domain.Core{}, "", errors.New("Failed. Process error. Please contact Admin")
+		}
+	} else {
+		loggo.Println("res pass", res.Password, "\n\npass", password)
+		err := bcrypt.CompareHashAndPassword([]byte(res.Password), []byte(password))
+		if err != nil {
+			return domain.Core{}, "", errors.New("Failed. Incorrect Password.")
+		}
+
+		token, err := jwt.GenerateJWTToken(res.ID)
+		if err != nil {
+			return domain.Core{}, "", err
+		}
+		return res, token, nil
 	}
 
-	return res, nil
 }
+
+// err = bcrypt.CompareHashAndPassword([]byte(res.Password), []byte(password))
+// if err != nil {
+// 	log.Error(err.Error())
+// 	return domain.Core{}, " ", errors.New("incorrect password")
+// }
+// token, err := jwt.GenerateJWTToken(res.ID)
+// if err != nil {
+// 	return domain.Core{}, "", err
+// }
+
+// return res, token, nil
 
 // DeleteProfile implements domain.Service
 func (*repoService) DeleteProfile(ID uint) (domain.Core, error) {

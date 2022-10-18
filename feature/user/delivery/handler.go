@@ -2,6 +2,7 @@ package delivery
 
 import (
 	"be_project2team4/feature/user/domain"
+	"log"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -36,7 +37,7 @@ func (us *userHandler) Register() echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, FailResponses(err.Error()))
 		}
 
-		return c.JSON(http.StatusCreated, SuccessResponses("berhasil register", ToResponse(res, "reg")))
+		return c.JSON(http.StatusCreated, SuccessResponses("berhasil register", ToResponse(res, "reg", "")))
 	}
 
 }
@@ -47,13 +48,14 @@ func (us *userHandler) Login() echo.HandlerFunc {
 		if err := c.Bind(&input); err != nil {
 			return c.JSON(http.StatusBadRequest, FailResponses("cannot bind input"))
 		}
-		//cnv := ToDomain(input)
-		res, err := us.srv.Login(domain.Core{Email: input.Email, Password: input.Password})
+		cnv := ToDomain(input)
+		log.Println("\n\n\ndata login \n", input, "\n\n")
+		res, token, err := us.srv.Login(cnv.Email, cnv.Password)
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, FailResponses(err.Error()))
 		}
 
-		return c.JSON(http.StatusCreated, SuccessResponses("berhasil login", ToResponse(res, "login")))
+		return c.JSON(http.StatusCreated, SuccessLoginResponses("berhasil login", ToResponse(res, "login", token)))
 	}
 }
 

@@ -2,7 +2,6 @@ package repository
 
 import (
 	"be_project2team4/feature/user/domain"
-	"be_project2team4/utils/jwt"
 
 	"github.com/labstack/gommon/log"
 	"gorm.io/gorm"
@@ -33,23 +32,22 @@ func (rq *repoQuery) Insert(newUser domain.Core) (domain.Core, error) {
 }
 
 // GetUser implements domain.Repository
-func (rq *repoQuery) GetUser(newUser domain.Core) (domain.Core, error) {
-	//var newUser domain.Core
+func (rq *repoQuery) GetUser(email string) (domain.Core, error) {
 	var resQry User
-	var err error
-	if err := rq.db.Where("Email = ? ", newUser.Email).First(&resQry).Error; err != nil {
+	//var err error
+	if err := rq.db.First(&resQry, "email = ? ", email).Error; err != nil {
 		log.Error("Error on get user", err.Error())
 		return domain.Core{}, err
 	}
 
-	resQry.Token, err = jwt.GenerateJWTToken(resQry.ID)
-	if err != nil {
-		return domain.Core{}, err
-	}
+	// resQry.Token, err = jwt.GenerateJWTToken(resQry.ID)
+	// if err != nil {
+	// 	return domain.Core{}, err
+	// }
 
-	if err := rq.db.Save(resQry).Error; err != nil {
-		return domain.Core{}, err
-	}
+	// if err := rq.db.Save(resQry).Error; err != nil {
+	// 	return domain.Core{}, err
+	// }
 
 	loginUser := ToDomain(resQry)
 	return loginUser, nil
