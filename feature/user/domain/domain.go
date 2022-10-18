@@ -21,7 +21,7 @@ type Repository interface {
 	GetUser(Email string) (Core, error)             //login
 	Update(updatedData Core, ID uint) (Core, error) //update/edit
 	Get(Email string) (Core, error)                 //get/find
-	GetAll() ([]Core, error)                        //show all user
+	ShowAllUser() ([]Core, error)                   //show all user
 	Delete(ID uint) (Core, error)                   //delete
 }
 
@@ -29,12 +29,12 @@ type Service interface {
 	Register(newUser Core) (Core, error)
 	Login(Email string) (Core, error)
 	UpdateProfile(updatedData Core, ID uint) (Core, error)
-	GetAll() ([]Core, error)
+	ShowAllUser() ([]Core, error)
 	Profile(Email string) (Core, error)
 	DeleteProfile(ID uint) (Core, error)
 }
 
 type Handler interface {
-	GetAll() echo.HandlerFunc
+	ShowAllUser() echo.HandlerFunc
 	Get() echo.HandlerFunc
 }

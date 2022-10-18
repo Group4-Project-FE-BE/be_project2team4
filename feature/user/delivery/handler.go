@@ -42,7 +42,7 @@ func (us *userHandler) AddUser() echo.HandlerFunc {
 
 func (us *userHandler) ShowAllUser() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		res, err := us.srv.GetAll()
+		res, err := us.srv.ShowAllUser()
 		if err != nil {
 			log.Error(err.Error())
 			return c.JSON(http.StatusInternalServerError, FailResponses(err.Error()))

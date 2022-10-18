@@ -35,7 +35,7 @@ func (rs *repoService) AddUser(newUser domain.Core) (domain.Core, error) {
 
 // ShowAllUser implements domain.Service
 func (rs *repoService) ShowAllUser() ([]domain.Core, error) {
-	res, err := rs.qry.GetAll()
+	res, err := rs.qry.ShowAllUser()
 
 	if err == gorm.ErrRecordNotFound {
 		log.Error(err.Error())
@@ -53,8 +53,8 @@ func (rs *repoService) ShowAllUser() ([]domain.Core, error) {
 }
 
 // Profile implements domain.Service
-func (rs *repoService) Profile(ID uint) (domain.Core, error) {
-	res, err := rs.qry.Get(ID)
+func (rs *repoService) Profile(Email string) (domain.Core, error) {
+	res, err := rs.qry.Get(Email)
 	if err != nil {
 		log.Error(err.Error())
 		if err == gorm.ErrRecordNotFound {

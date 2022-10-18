@@ -35,19 +35,19 @@ func (_m *Repository) Delete(ID uint) (domain.Core, error) {
 }
 
 // Get provides a mock function with given fields: ID
-func (_m *Repository) Get(ID uint) (domain.Core, error) {
-	ret := _m.Called(ID)
+func (_m *Repository) Get(Email string) (domain.Core, error) {
+	ret := _m.Called(Email)
 
 	var r0 domain.Core
-	if rf, ok := ret.Get(0).(func(uint) domain.Core); ok {
-		r0 = rf(ID)
+	if rf, ok := ret.Get(0).(func(string) domain.Core); ok {
+		r0 = rf(Email)
 	} else {
 		r0 = ret.Get(0).(domain.Core)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(uint) error); ok {
-		r1 = rf(ID)
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(Email)
 	} else {
 		r1 = ret.Error(1)
 	}
