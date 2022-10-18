@@ -32,6 +32,7 @@ func (rq *repoQuery) Insert(newUser domain.Core) (domain.Core, error) {
 }
 
 // GetUser implements domain.Repository
+// get all user data to show user
 func (rq *repoQuery) GetUser(email string) (domain.Core, error) {
 	var resQry User
 	//var err error

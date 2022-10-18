@@ -28,6 +28,8 @@ type registerRespons struct {
 	ID    uint   `json:"id"`
 	Name  string `json:"name"`
 	Email string `json:"email"`
+	Phone string `json:"phone"`
+	Bio   string `json:"bio"`
 }
 
 type loginResponses struct {
@@ -50,7 +52,7 @@ func ToResponse(core interface{}, code string, token string) interface{} {
 	switch code {
 	case "reg":
 		cnv := core.(domain.Core)
-		res = registerRespons{ID: cnv.ID, Name: cnv.Name, Email: cnv.Email}
+		res = registerRespons{ID: cnv.ID, Name: cnv.Name, Email: cnv.Email, Phone: cnv.Phone, Bio: cnv.Bio}
 	case "login":
 		cnv := core.(domain.Core)
 		res = loginResponses{Name: cnv.Name, Email: cnv.Email, Token: token}
