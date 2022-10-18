@@ -95,7 +95,7 @@ func (*repoService) DeleteProfile(ID uint) (domain.Core, error) {
 }
 
 // Profile implements domain.Service
-func (*repoService) Profile(ID uint) (domain.Core, error) {
+func (*repoService) Profile(email string) (domain.Core, error) {
 	panic("unimplemented")
 }
 
