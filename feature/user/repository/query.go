@@ -61,7 +61,7 @@ func (*repoQuery) Delete(ID uint) (domain.Core, error) {
 }
 
 // Get implements domain.Repository
-func (*repoQuery) Get(ID uint) (domain.Core, error) {
+func (*repoQuery) Get(email string) (domain.Core, error) {
 	panic("unimplemented")
 }
 
