@@ -50,6 +50,7 @@ func (rq *repoQuery) Get(ID uint) (domain.Core, error) {
 
 // Update implements domain.Repository
 // update user test
+// update user test 2
 func (rq *repoQuery) Update(updatedData domain.Core, ID uint) (domain.Core, error) {
 	var res User
 	if err := rq.db.First(&res, "id=?", res.ID).Error; err != nil {
