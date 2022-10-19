@@ -30,9 +30,6 @@ func ToDomain(i interface{}) domain.Core {
 	case LoginFormat:
 		cnv := i.(LoginFormat)
 		return domain.Core{Email: cnv.Email, Password: cnv.Password}
-<<<<<<< Updated upstream
-
-=======
 	case EditUserRequestFormat:
 		cnv := i.(EditUserRequestFormat)
 		return domain.Core{
@@ -44,7 +41,6 @@ func ToDomain(i interface{}) domain.Core {
 			Gender:   cnv.Gender,
 			Location: cnv.Location,
 		}
->>>>>>> Stashed changes
 	}
 	return domain.Core{}
 }

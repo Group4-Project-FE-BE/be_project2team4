@@ -14,7 +14,7 @@ import (
 var key string
 
 func InitJWT(c *config.AppConfig) {
-	key = c.JWTSecret
+	key = c.JWSecret
 }
 
 func GenerateJWTToken(id uint) (string, error) {

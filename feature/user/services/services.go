@@ -60,7 +60,7 @@ func (rs *repoService) Login(email, password string) (domain.Core, string, error
 		if strings.Contains(err.Error(), "table") {
 			return domain.Core{}, "", errors.New("Failed. Error database.")
 		} else if strings.Contains(err.Error(), "found") {
-			return domain.Core{}, "", errors.New("Failed. HP or Password not found.")
+			return domain.Core{}, "", errors.New("Failed. Email or Password not found.")
 		} else {
 			return domain.Core{}, "", errors.New("Failed. Process error. Please contact Admin")
 		}
@@ -93,7 +93,11 @@ func (*repoService) Profile(email string) (domain.Core, error) {
 // UpdateProfile implements domain.Service
 func (rs *repoService) UpdateProfile(updatedData domain.Core, c echo.Context) (domain.Core, error) {
 	userId, _ := jwt.ExtractToken(c)
+	log.Printf("\n\n\nisi service = ", updatedData, "\n\n\n")
 	res, err := rs.qry.Update(updatedData, userId)
+
+	log.Printf("\n\n\nisi service 2 = ", res, "\n\n\n")
+
 	if err != nil {
 		log.Error(err.Error())
 		if err == gorm.ErrRecordNotFound {

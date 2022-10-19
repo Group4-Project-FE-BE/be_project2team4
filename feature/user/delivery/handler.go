@@ -17,7 +17,7 @@ type userHandler struct {
 }
 
 func InitJWT(c *config.AppConfig) {
-	key = c.JWTSecret
+	key = c.JWSecret
 }
 
 func New(e *echo.Echo, srv domain.Service) {
@@ -25,14 +25,10 @@ func New(e *echo.Echo, srv domain.Service) {
 
 	e.POST("/register", handler.Register())
 	e.POST("/login", handler.Login())
-<<<<<<< Updated upstream
-
-=======
 	// e.GET("/users", handler.ShowAllUser())
 	// e.GET("/users/:id", handler.Profile())
 	e.PUT("/users", handler.EditProfile(), middleware.JWT([]byte(key)))
 	e.DELETE("/users", handler.DeleteUser(), middleware.JWT([]byte(key)))
->>>>>>> Stashed changes
 }
 
 // registrasi add user
@@ -70,8 +66,6 @@ func (us *userHandler) Login() echo.HandlerFunc {
 		return c.JSON(http.StatusCreated, SuccessLoginResponses("berhasil login", ToResponse(res, "login", token)))
 	}
 }
-<<<<<<< Updated upstream
-=======
 
 // func (us *userHandler) AddUser() echo.HandlerFunc {
 // 	return func(c echo.Context) error {
@@ -127,9 +121,13 @@ func (us *userHandler) EditProfile() echo.HandlerFunc {
 		if err := c.Bind(&input); err != nil {
 			return c.JSON(http.StatusBadRequest, FailResponses("cannot bind input"))
 		}
-
+		log.Printf("\n\n\nisi handler = ", input, "\n\n\n")
 		updateData := ToDomain(input)
+		log.Printf("\n\n\nisi updatedata = ", updateData, "\n\n\n")
+
 		res, err := us.srv.UpdateProfile(updateData, c)
+
+		log.Println("")
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, FailResponses(err.Error()))
 		}
@@ -152,4 +150,3 @@ func (us *userHandler) DeleteUser() echo.HandlerFunc {
 		return c.JSON(http.StatusOK, SuccessDeleteResponses("Success Delete Data"))
 	}
 }
->>>>>>> Stashed changes
