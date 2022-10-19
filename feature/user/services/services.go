@@ -122,67 +122,6 @@ func (rs *repoService) IsAuthorized(c echo.Context) error {
 	}
 }
 
-// // AddUser implements domain.Service
-// func (rs *repoService) AddUser(newUser domain.Core) (domain.Core, error) {
-// 	res, err := rs.qry.Insert(newUser)
-// 	if err != nil {
-// 		log.Error(err.Error())
-// 		if strings.Contains(err.Error(), "duplicate") {
-// 			return domain.Core{}, errors.New(config.DUPLICATED_DATA)
-// 		}
-// 		return domain.Core{}, errors.New("some problem on database")
-// 	}
-// 	return res, nil
-// }
-
-// // ShowAllUser implements domain.Service
-// func (rs *repoService) ShowAllUser() ([]domain.Core, error) {
-// 	res, err := rs.qry.GetAll()
-
-// 	if err == gorm.ErrRecordNotFound {
-// 		log.Error(err.Error())
-// 		return nil, gorm.ErrRecordNotFound
-// 	} else if err != nil {
-// 		log.Error(err.Error())
-// 		return nil, errors.New(config.DATABASE_ERROR)
-// 	}
-
-// 	if len(res) == 0 {
-// 		log.Info("no data")
-// 		return nil, errors.New(config.DATA_NOTFOUND)
-// 	}
-// 	return res, nil
-// }
-
-// // Profile implements domain.Service
-// func (rs *repoService) Profile(ID uint) (domain.Core, error) {
-// 	res, err := rs.qry.Get(ID)
-// 	if err != nil {
-// 		log.Error(err.Error())
-// 		if err == gorm.ErrRecordNotFound {
-// 			return domain.Core{}, gorm.ErrRecordNotFound
-// 		} else {
-// 			return domain.Core{}, errors.New(config.DATABASE_ERROR)
-// 		}
-// 	}
-// 	return res, nil
-// }
-
-// // UpdateProfile implements domain.Service
-// func (rs *repoService) UpdateProfile(updatedData domain.Core, ID uint) (domain.Core, error) {
-// 	res, err := rs.qry.Update(updatedData, ID)
-// 	if err != nil {
-// 		log.Error(err.Error())
-// 		if err == gorm.ErrRecordNotFound {
-// 			return domain.Core{}, gorm.ErrRecordNotFound
-// 		} else {
-// 			return domain.Core{}, errors.New(config.DATABASE_ERROR)
-// 		}
-// 	}
-// 	return res, nil
-// }
-
-// DeleteUser implements domain.Service
 func (rs *repoService) DeleteProfile(c echo.Context) (domain.Core, error) {
 	id := jwt.ExtractIdToken(c)
 	res, err := rs.qry.Delete(id)
