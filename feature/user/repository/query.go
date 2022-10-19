@@ -51,11 +51,6 @@ func (*repoQuery) Get(email string) (domain.Core, error) {
 	panic("unimplemented")
 }
 
-<<<<<<< Updated upstream
-// Update implements domain.Repository
-func (*repoQuery) Update(updatedData domain.Core, ID uint) (domain.Core, error) {
-	panic("unimplemented")
-=======
 // // Insert implements domain.Repository
 // func (rq *repoQuery) Insert(newUser domain.Core) (domain.Core, error) {
 // 	var cnv User
@@ -89,17 +84,19 @@ func (*repoQuery) Update(updatedData domain.Core, ID uint) (domain.Core, error) 
 
 // Update implements domain.Repository
 func (rq *repoQuery) Update(updatedData domain.Core, ID uint) (domain.Core, error) {
-	var res User
-	if err := rq.db.First(&res, "id=?", ID).Error; err != nil {
+	var cnv User
+	cnv = FromDomain(updatedData)
+
+	err := rq.db.Where("id = ?", ID).First(&cnv).Error
+	if err != nil {
 		return domain.Core{}, err
 	}
 
-	res.ID = ID
-
-	if err := rq.db.Save(&res).Error; err != nil {
+	cnv.ID = ID
+	if err := rq.db.Save(&cnv).Error; err != nil {
 		return domain.Core{}, err
 	}
-	return ToDomain(res), nil
+	return ToDomain(cnv), nil
 }
 
 // Delete implements domain.Repository
@@ -112,5 +109,4 @@ func (rq *repoQuery) Delete(ID uint) (domain.Core, error) {
 		return domain.Core{}, err
 	}
 	return ToDomain(res), nil
->>>>>>> Stashed changes
 }
