@@ -28,6 +28,18 @@ func InitDB(c *config.AppConfig) *gorm.DB {
 	return db
 }
 
+// func InitDB(cfg *config.AppConfig) *gorm.DB {
+// 	dsn := "root:@tcp(mysqlbe12:3306)/deploy_auth?charset=utf8mb4&parseTime=True&loc=Local"
+// 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+
+// 	if err != nil {
+// 		log.Fatal("Cannot connect to DB")
+// 	}
+
+// 	migrateDB(db)
+// 	return db
+// }
+
 func migrateDB(db *gorm.DB) {
 	db.AutoMigrate(&rUser.User{})
 }

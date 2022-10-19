@@ -4,17 +4,16 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/joho/godotenv"
 	"github.com/labstack/gommon/log"
 )
 
 type AppConfig struct {
-	DBPort    uint
-	DBUser    string
-	DBPwd     string
-	DBHost    string
-	DBName    string
-	JWTSecret string
+	DBPort   uint
+	DBUser   string
+	DBPwd    string
+	DBHost   string
+	DBName   string
+	JWSecret string
 }
 
 func NewConfig() *AppConfig {
@@ -30,11 +29,11 @@ func NewConfig() *AppConfig {
 func initConfig() *AppConfig {
 	var app AppConfig
 
-	err := godotenv.Load("config.env")
-	if err != nil {
-		log.Error("config error :", err.Error())
-		return nil
-	}
+	// err := godotenv.Load("config.env")
+	// if err != nil {
+	// 	log.Error("config error :", err.Error())
+	// 	return nil
+	// }
 
 	app.DBUser = os.Getenv("DB_USER")
 	app.DBPwd = os.Getenv("DB_PWD")
@@ -46,7 +45,7 @@ func initConfig() *AppConfig {
 	}
 	app.DBPort = uint(port)
 	app.DBName = os.Getenv("DB_NAME")
-	app.JWTSecret = os.Getenv("JWT_SECRET")
+	app.JWSecret = os.Getenv("JW_SECRET")
 
 	return &app
 }
