@@ -2,9 +2,7 @@ package config
 
 import (
 	"os"
-	"strconv"
 
-	//"github.com/joho/godotenv"
 	"github.com/labstack/gommon/log"
 )
 
@@ -39,14 +37,14 @@ func initConfig() *AppConfig {
 	app.DBUser = os.Getenv("DB_USER")
 	app.DBPwd = os.Getenv("DB_PWD")
 	app.DBHost = os.Getenv("DB_HOST")
-	port, err := strconv.Atoi(os.Getenv("DB_PORT"))
-	if err != nil {
-		log.Error("config error :", err.Error())
-		return nil
-	}
-	app.DBPort = uint(port)
-	app.DBName = os.Getenv("DB_NAME")
-	app.JWTSecret = os.Getenv("JWT_SECRET")
+	// port, err := strconv.Atoi(os.Getenv("DB_PORT"))
+	// if err != nil {
+	// 	log.Error("config error :", err.Error())
+	// 	return nil
+	// }
+	// app.DBPort = uint(port)
+	// app.DBName = os.Getenv("DB_NAME")
+	// app.JWTSecret = os.Getenv("JWT_SECRET")
 
 	return &app
 }
