@@ -5,11 +5,13 @@ import (
 	"be_project2team4/feature/user/domain"
 	"be_project2team4/utils/jwt"
 	"errors"
-	loggo "log"
 	"strings"
+	"time"
 
+	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 func New(repo domain.Repository) domain.Service {
@@ -63,7 +65,7 @@ func (rs *repoService) Login(email, password string) (domain.Core, string, error
 			return domain.Core{}, "", errors.New("Failed. Process error. Please contact Admin")
 		}
 	} else {
-		loggo.Println("res pass", res.Password, "\n\npass", password)
+		// loggo.Println("res pass", res.Password, "\n\npass", password)
 		err := bcrypt.CompareHashAndPassword([]byte(res.Password), []byte(password))
 		if err != nil {
 			return domain.Core{}, "", errors.New("Failed. Incorrect Password.")
@@ -79,9 +81,9 @@ func (rs *repoService) Login(email, password string) (domain.Core, string, error
 }
 
 // DeleteProfile implements domain.Service
-func (*repoService) DeleteProfile(ID uint) (domain.Core, error) {
-	panic("unimplemented")
-}
+// func (*repoService) DeleteProfile(ID uint) (domain.Core, error) {
+// 	panic("unimplemented")
+// }
 
 // Profile implements domain.Service
 func (*repoService) Profile(email string) (domain.Core, error) {
@@ -89,8 +91,31 @@ func (*repoService) Profile(email string) (domain.Core, error) {
 }
 
 // UpdateProfile implements domain.Service
-func (*repoService) UpdateProfile(updatedData domain.Core, ID uint) (domain.Core, error) {
-	panic("unimplemented")
+func (rs *repoService) UpdateProfile(updatedData domain.Core, c echo.Context) (domain.Core, error) {
+	userId, _ := jwt.ExtractToken(c)
+	res, err := rs.qry.Update(updatedData, userId)
+	if err != nil {
+		log.Error(err.Error())
+		if err == gorm.ErrRecordNotFound {
+			return domain.Core{}, gorm.ErrRecordNotFound
+		} else {
+			return domain.Core{}, errors.New(config.DATABASE_ERROR)
+		}
+	}
+	return res, nil
+}
+
+func (rs *repoService) IsAuthorized(c echo.Context) error {
+	id, exp := jwt.ExtractToken(c)
+	// loggo.Println("id dr tken = ", id)
+	// loggo.Println("exp dr tken = ", exp)
+	if id == 0 {
+		return errors.New("Request not authorized. Please check token. User not found.")
+	} else if time.Now().Unix() > exp {
+		return errors.New("Request not authorized. Please check token. Expired token.")
+	} else {
+		return nil
+	}
 }
 
 // // AddUser implements domain.Service
@@ -153,16 +178,17 @@ func (*repoService) UpdateProfile(updatedData domain.Core, ID uint) (domain.Core
 // 	return res, nil
 // }
 
-// // DeleteUser implements domain.Service
-// func (rs *repoService) DeleteUser(ID uint) (domain.Core, error) {
-// 	res, err := rs.qry.Delete(ID)
-// 	if err != nil {
-// 		log.Error(err.Error())
-// 		if err == gorm.ErrRecordNotFound {
-// 			return res, gorm.ErrRecordNotFound
-// 		} else {
-// 			return res, errors.New(config.DATABASE_ERROR)
-// 		}
-// 	}
-// 	return domain.Core{}, nil
-// }
+// DeleteUser implements domain.Service
+func (rs *repoService) DeleteProfile(c echo.Context) (domain.Core, error) {
+	id := jwt.ExtractIdToken(c)
+	res, err := rs.qry.Delete(id)
+	if err != nil {
+		log.Error(err.Error())
+		if err == gorm.ErrRecordNotFound {
+			return res, gorm.ErrRecordNotFound
+		} else {
+			return res, errors.New(config.DATABASE_ERROR)
+		}
+	}
+	return domain.Core{}, nil
+}
