@@ -17,6 +17,12 @@ func FailResponses(msg string) map[string]string {
 	}
 }
 
+func SuccessDeleteResponses(msg string) map[string]interface{} {
+	return map[string]interface{}{
+		"message": msg,
+	}
+}
+
 func SuccessLoginResponses(msg string, data interface{}) map[string]interface{} {
 	return map[string]interface{}{
 		"message": msg,
@@ -40,10 +46,14 @@ type loginResponses struct {
 	Token string `json:"token"`
 }
 
-type editUserRespons struct {
-	Name   string `json:"name"`
-	HP     string `json:"hp"`
-	Addres string `json:"addres"`
+type EditUserResponseFormat struct {
+	ID       uint   `json:"id"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Phone    string `json:"phone"`
+	Bio      string `json:"bio"`
+	Gender   string `json:"gender"`
+	Location string `json:"location"`
 }
 
 func ToResponse(core interface{}, code string, token string) interface{} {
@@ -58,7 +68,15 @@ func ToResponse(core interface{}, code string, token string) interface{} {
 		res = loginResponses{Name: cnv.Name, Email: cnv.Email, Token: token}
 	case "edit":
 		cnv := core.(domain.Core)
-		res = editUserRespons{Name: cnv.Name}
+		res = EditUserResponseFormat{
+			ID:       cnv.ID,
+			Name:     cnv.Name,
+			Email:    cnv.Email,
+			Phone:    cnv.Phone,
+			Bio:      cnv.Bio,
+			Gender:   cnv.Gender,
+			Location: cnv.Location,
+		}
 	}
 	return res
 }

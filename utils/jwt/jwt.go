@@ -4,6 +4,7 @@ import (
 	"be_project2team4/config"
 	"errors"
 	"log"
+
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -43,4 +44,15 @@ func ExtractIdToken(c echo.Context) uint {
 	}
 
 	return 0
+}
+
+func ExtractToken(c echo.Context) (uint, int64) {
+	token := c.Get("user").(*jwt.Token)
+	// log.Println("\n\n\nisi token\n", token, "\n\n")
+	if token.Valid {
+		claims := token.Claims.(jwt.MapClaims)
+		return uint(claims["id"].(float64)), int64(claims["exp"].(float64))
+	}
+
+	return 0, 0
 }
