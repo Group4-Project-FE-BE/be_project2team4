@@ -13,8 +13,78 @@ type Service struct {
 	mock.Mock
 }
 
-// AddUser provides a mock function with given fields: newUser
-func (_m *Service) AddUser(newUser domain.Core) (domain.Core, error) {
+// DeleteProfile provides a mock function with given fields: ID
+func (_m *Service) DeleteProfile(ID uint) (domain.Core, error) {
+	ret := _m.Called(ID)
+
+	var r0 domain.Core
+	if rf, ok := ret.Get(0).(func(uint) domain.Core); ok {
+		r0 = rf(ID)
+	} else {
+		r0 = ret.Get(0).(domain.Core)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(uint) error); ok {
+		r1 = rf(ID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// Login provides a mock function with given fields: email, password
+func (_m *Service) Login(email string, password string) (domain.Core, string, error) {
+	ret := _m.Called(email, password)
+
+	var r0 domain.Core
+	if rf, ok := ret.Get(0).(func(string, string) domain.Core); ok {
+		r0 = rf(email, password)
+	} else {
+		r0 = ret.Get(0).(domain.Core)
+	}
+
+	var r1 string
+	if rf, ok := ret.Get(1).(func(string, string) string); ok {
+		r1 = rf(email, password)
+	} else {
+		r1 = ret.Get(1).(string)
+	}
+
+	var r2 error
+	if rf, ok := ret.Get(2).(func(string, string) error); ok {
+		r2 = rf(email, password)
+	} else {
+		r2 = ret.Error(2)
+	}
+
+	return r0, r1, r2
+}
+
+// Profile provides a mock function with given fields: email
+func (_m *Service) Profile(email string) (domain.Core, error) {
+	ret := _m.Called(email)
+
+	var r0 domain.Core
+	if rf, ok := ret.Get(0).(func(string) domain.Core); ok {
+		r0 = rf(email)
+	} else {
+		r0 = ret.Get(0).(domain.Core)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(email)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// Register provides a mock function with given fields: newUser
+func (_m *Service) Register(newUser domain.Core) (domain.Core, error) {
 	ret := _m.Called(newUser)
 
 	var r0 domain.Core
@@ -27,71 +97,6 @@ func (_m *Service) AddUser(newUser domain.Core) (domain.Core, error) {
 	var r1 error
 	if rf, ok := ret.Get(1).(func(domain.Core) error); ok {
 		r1 = rf(newUser)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// DeleteUser provides a mock function with given fields: ID
-func (_m *Service) DeleteUser(ID uint) (domain.Core, error) {
-	ret := _m.Called(ID)
-
-	var r0 domain.Core
-	if rf, ok := ret.Get(0).(func(uint) domain.Core); ok {
-		r0 = rf(ID)
-	} else {
-		r0 = ret.Get(0).(domain.Core)
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func(uint) error); ok {
-		r1 = rf(ID)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// Profile provides a mock function with given fields: ID
-func (_m *Service) Profile(ID uint) (domain.Core, error) {
-	ret := _m.Called(ID)
-
-	var r0 domain.Core
-	if rf, ok := ret.Get(0).(func(uint) domain.Core); ok {
-		r0 = rf(ID)
-	} else {
-		r0 = ret.Get(0).(domain.Core)
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func(uint) error); ok {
-		r1 = rf(ID)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// ShowAllUser provides a mock function with given fields:
-func (_m *Service) ShowAllUser() ([]domain.Core, error) {
-	ret := _m.Called()
-
-	var r0 []domain.Core
-	if rf, ok := ret.Get(0).(func() []domain.Core); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]domain.Core)
-		}
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func() error); ok {
-		r1 = rf()
 	} else {
 		r1 = ret.Error(1)
 	}

@@ -3,7 +3,7 @@ name: build-push
 on:
   push:
     branches:
-      - 'main'
+      - 'user'
 
 jobs:
   docker:
@@ -26,7 +26,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: lukman31/deploy:latest
+          tags: lukman31/authdeploy:latest
       - 
         name: executing remote ssh commands using ssh key
         uses: appleboy/ssh-action@master
@@ -36,10 +36,10 @@ jobs:
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           script: |
-              docker stop projectuser
-              docker rm projectuser
-              docker rmi lukman31/deploy
-              docker run --name projectuser --link mysqlbe12 -d -p 8000:8000 lukman31/deploy
+              docker stop projectauth
+              docker rm projectauth
+              docker rmi lukman31/authdeploy
+              docker run --name projectuser --link mysqlbe12 -d -p 8000:8000 -e DB_USER = ${{secrets.DB_USER}} -e DB_PWD = ${{secrets.DB_PWD}} -e DB_HOST= ${{secrets.DB_HOST}}  -e DB_PORT = ${{secrets.DB_PORT}}  -e DB_NAME = ${{secrets.DB_NAME}} -e JW_SECRET = ${{secrets.JW_SECRET}} rootlukman31/deploy
 
 
 
