@@ -29,11 +29,18 @@ func NewConfig() *AppConfig {
 
 func initConfig() *AppConfig {
 	var app AppConfig
-
-	err := godotenv.Load("config.env")
-	if err != nil {
-		log.Error("config error :", err.Error())
+	isProduction, errPro := strconv.Atoi(os.Getenv("IS_PRODuCTION"))
+	if errPro != nil {
+		log.Error("config error :", errPro.Error())
 		return nil
+	}
+
+	if isProduction != 1 {
+		err := godotenv.Load("config.env")
+		if err != nil {
+			log.Error("config error :", err.Error())
+			return nil
+		}
 	}
 
 	app.DBUser = os.Getenv("DB_USER")
