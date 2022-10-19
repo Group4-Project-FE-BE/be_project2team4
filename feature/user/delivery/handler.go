@@ -67,46 +67,6 @@ func (us *userHandler) Login() echo.HandlerFunc {
 	}
 }
 
-// func (us *userHandler) AddUser() echo.HandlerFunc {
-// 	return func(c echo.Context) error {
-// 		var input addUserFormat
-// 		if err := c.Bind(&input); err != nil {
-// 			log.Error(err.Error())
-// 			return c.JSON(http.StatusBadRequest, FailResponses("cannot bind input"))
-// 		}
-// 		cnv := ToDomain(input)
-// 		res, err := us.srv.AddUser(cnv)
-// 		if err != nil {
-// 			log.Error(err.Error())
-// 			return c.JSON(http.StatusInternalServerError, FailResponses(err.Error()))
-// 		}
-// 		return c.JSON(http.StatusCreated, SuccessResponses("sucses input user", ToResponse(res, "insert")))
-// 	}
-// }
-
-// func (us *userHandler) ShowAllUser() echo.HandlerFunc {
-// 	return func(c echo.Context) error {
-// 		res, err := us.srv.ShowAllUser()
-// 		if err != nil {
-// 			log.Error(err.Error())
-// 			return c.JSON(http.StatusInternalServerError, FailResponses(err.Error()))
-// 		}
-// 		return c.JSON(http.StatusOK, SuccessResponses("success get all user", ToResponse(res, "all")))
-// 	}
-// }
-
-// func (us *userHandler) Profile() echo.HandlerFunc {
-// 	return func(c echo.Context) error {
-// 		ID, err := strconv.Atoi(c.Param("id"))
-// 		res, err := us.srv.Profile(uint(ID))
-// 		if err != nil {
-// 			return c.JSON(http.StatusBadRequest, FailResponses(err.Error()))
-// 		}
-
-// 		return c.JSON(http.StatusOK, SuccessResponses("sucses get userByid", res))
-// 	}
-// }
-
 func (us *userHandler) EditProfile() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		// Check authorized request atau tidak dgn token
