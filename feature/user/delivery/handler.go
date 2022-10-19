@@ -121,9 +121,8 @@ func (us *userHandler) EditProfile() echo.HandlerFunc {
 		if err := c.Bind(&input); err != nil {
 			return c.JSON(http.StatusBadRequest, FailResponses("cannot bind input"))
 		}
-		log.Printf("\n\n\nisi handler = ", input, "\n\n\n")
+
 		updateData := ToDomain(input)
-		log.Printf("\n\n\nisi updatedata = ", updateData, "\n\n\n")
 
 		res, err := us.srv.UpdateProfile(updateData, c)
 
