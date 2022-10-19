@@ -25,7 +25,7 @@ func FromDomain(du domain.Core) User {
 		Password: du.Password,
 		Phone:    du.Phone,
 		Bio:      du.Bio,
-		Gender:   du.Bio,
+		Gender:   du.Gender,
 		Location: du.Location,
 	}
 }
@@ -38,7 +38,7 @@ func ToDomain(u User) domain.Core {
 		Password: u.Password,
 		Phone:    u.Phone,
 		Bio:      u.Bio,
-		Gender:   u.Bio,
+		Gender:   u.Gender,
 		Location: u.Location,
 	}
 }
@@ -53,7 +53,7 @@ func ToDomainArray(au []User) []domain.Core {
 			Password: val.Password,
 			Phone:    val.Phone,
 			Bio:      val.Bio,
-			Gender:   val.Bio,
+			Gender:   val.Gender,
 			Location: val.Location,
 		})
 	}

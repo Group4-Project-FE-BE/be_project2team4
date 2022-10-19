@@ -84,10 +84,11 @@ func (*repoQuery) Get(email string) (domain.Core, error) {
 
 // Update implements domain.Repository
 func (rq *repoQuery) Update(updatedData domain.Core, ID uint) (domain.Core, error) {
+	var template User
 	var cnv User
 	cnv = FromDomain(updatedData)
 
-	err := rq.db.Where("id = ?", ID).First(&cnv).Error
+	err := rq.db.Where("id = ?", ID).First(&template).Error
 	if err != nil {
 		return domain.Core{}, err
 	}
