@@ -34,20 +34,20 @@ func (_m *Repository) Delete(ID uint) (domain.Core, error) {
 	return r0, r1
 }
 
-// Get provides a mock function with given fields: ID
-func (_m *Repository) Get(ID uint) (domain.Core, error) {
-	ret := _m.Called(ID)
+// Get provides a mock function with given fields: email
+func (_m *Repository) Get(email string) (domain.Core, error) {
+	ret := _m.Called(email)
 
 	var r0 domain.Core
-	if rf, ok := ret.Get(0).(func(uint) domain.Core); ok {
-		r0 = rf(ID)
+	if rf, ok := ret.Get(0).(func(string) domain.Core); ok {
+		r0 = rf(email)
 	} else {
 		r0 = ret.Get(0).(domain.Core)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(uint) error); ok {
-		r1 = rf(ID)
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(email)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -55,22 +55,20 @@ func (_m *Repository) Get(ID uint) (domain.Core, error) {
 	return r0, r1
 }
 
-// GetAll provides a mock function with given fields:
-func (_m *Repository) GetAll() ([]domain.Core, error) {
-	ret := _m.Called()
+// GetUser provides a mock function with given fields: email
+func (_m *Repository) GetUser(email string) (domain.Core, error) {
+	ret := _m.Called(email)
 
-	var r0 []domain.Core
-	if rf, ok := ret.Get(0).(func() []domain.Core); ok {
-		r0 = rf()
+	var r0 domain.Core
+	if rf, ok := ret.Get(0).(func(string) domain.Core); ok {
+		r0 = rf(email)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]domain.Core)
-		}
+		r0 = ret.Get(0).(domain.Core)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func() error); ok {
-		r1 = rf()
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(email)
 	} else {
 		r1 = ret.Error(1)
 	}

@@ -1,6 +1,7 @@
 package services
 
 import (
+	"be_project2team4/config"
 	"be_project2team4/feature/user/domain"
 	"be_project2team4/utils/jwt"
 	"errors"
@@ -34,7 +35,7 @@ func (rs *repoService) Register(newUser domain.Core) (domain.Core, error) {
 
 	if err != nil {
 		if strings.Contains(err.Error(), "duplicate") {
-			return domain.Core{}, errors.New("rejected from database")
+			return domain.Core{}, errors.New(config.DUPLICATED_DATA)
 		}
 
 		return domain.Core{}, errors.New("some problem on database")
@@ -76,18 +77,6 @@ func (rs *repoService) Login(email, password string) (domain.Core, string, error
 	}
 
 }
-
-// err = bcrypt.CompareHashAndPassword([]byte(res.Password), []byte(password))
-// if err != nil {
-// 	log.Error(err.Error())
-// 	return domain.Core{}, " ", errors.New("incorrect password")
-// }
-// token, err := jwt.GenerateJWTToken(res.ID)
-// if err != nil {
-// 	return domain.Core{}, "", err
-// }
-
-// return res, token, nil
 
 // DeleteProfile implements domain.Service
 func (*repoService) DeleteProfile(ID uint) (domain.Core, error) {
