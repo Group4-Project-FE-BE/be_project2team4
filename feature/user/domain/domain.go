@@ -1,5 +1,7 @@
 package domain
 
+import "github.com/labstack/echo/v4"
+
 type Core struct {
 	ID       uint
 	Name     string
@@ -22,7 +24,8 @@ type Repository interface {
 type Service interface {
 	Register(newUser Core) (Core, error)
 	Login(email, password string) (Core, string, error)
-	UpdateProfile(updatedData Core, ID uint) (Core, error)
+	UpdateProfile(updatedData Core, c echo.Context) (Core, error)
 	Profile(email string) (Core, error)
-	DeleteProfile(ID uint) (Core, error)
+	DeleteProfile(c echo.Context) (Core, error)
+	IsAuthorized(c echo.Context) error
 }
