@@ -2,6 +2,7 @@ package delivery
 
 import (
 	"be_project2team4/feature/user/domain"
+	"log"
 )
 
 func SuccessResponses(msg string, data interface{}) map[string]interface{} {
@@ -97,6 +98,23 @@ func ToResponse(core interface{}, code string, token string) interface{} {
 			Gender:   cnv.Gender,
 			Location: cnv.Location,
 		}
+	case "users":
+		var arrUser []GetUserResponseFormat
+		cnv := core.([]domain.Core)
+		log.Println("\n\n isi res =", cnv, "\n\n")
+		for _, val := range cnv {
+			arrUser = append(arrUser,
+				GetUserResponseFormat{
+					ID:       val.ID,
+					Name:     val.Name,
+					Email:    val.Email,
+					Phone:    val.Phone,
+					Bio:      val.Bio,
+					Gender:   val.Gender,
+					Location: val.Location,
+				})
+		}
+		res = arrUser
 	}
 	return res
 }

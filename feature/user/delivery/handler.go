@@ -140,6 +140,6 @@ func (us *userHandler) ShowAllUser() echo.HandlerFunc {
 			log.Println(err.Error())
 			return c.JSON(http.StatusInternalServerError, FailResponses(err.Error()))
 		}
-		return c.JSON(http.StatusOK, SuccessResponses("success get all user", ToResponse(res, "get", "")))
+		return c.JSON(http.StatusOK, SuccessResponses("success get all user", ToResponse(res, "users", "")))
 	}
 }

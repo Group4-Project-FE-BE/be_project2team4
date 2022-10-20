@@ -135,12 +135,13 @@ func (rs *repoService) DeleteProfile(c echo.Context) (domain.Core, error) {
 func (rs *repoService) ShowAllUser() ([]domain.Core, error) {
 	res, err := rs.qry.GetAll()
 
-	if err == gorm.ErrRecordNotFound {
+	if err != nil {
 		log.Error(err.Error())
-		return nil, gorm.ErrRecordNotFound
-	} else if err != nil {
-		log.Error(err.Error())
-		return nil, errors.New(config.DATABASE_ERROR)
+		if err == gorm.ErrRecordNotFound {
+			return []domain.Core{}, gorm.ErrRecordNotFound
+		} else {
+			return []domain.Core{}, errors.New(config.DATABASE_ERROR)
+		}
 	}
 
 	if len(res) == 0 {

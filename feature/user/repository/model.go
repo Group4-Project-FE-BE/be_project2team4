@@ -54,8 +54,7 @@ func ToDomainArray(au []User) []domain.Core {
 			Phone:    val.Phone,
 			Bio:      val.Bio,
 			Gender:   val.Gender,
-			Location: val.Location,
-		})
+			Location: val.Location})
 	}
 	return res
 }

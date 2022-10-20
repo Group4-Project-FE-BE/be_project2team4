@@ -65,12 +65,12 @@ func (rq *repoQuery) GetUser(email string) (domain.Core, error) {
 // GetAll implements domain.Repository
 // get all user data to show user
 func (rq *repoQuery) GetAll() ([]domain.Core, error) {
-	var res []User
-	if err := rq.db.Find(res).Error; err != nil {
+	var resQry []User
+	if err := rq.db.Find(&resQry).Error; err != nil {
 		log.Error("error on get all user", err.Error())
-		return []domain.Core{}, err
+		return nil, err
 	}
-	resFinal := ToDomainArray(res)
+	resFinal := ToDomainArray(resQry)
 	return resFinal, nil
 }
 
