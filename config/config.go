@@ -4,7 +4,6 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/joho/godotenv"
 	"github.com/labstack/gommon/log"
 )
 
@@ -35,11 +34,11 @@ func initConfig() *AppConfig {
 	// 	return nil
 	// }
 
-	err := godotenv.Load("config.env")
-	if err != nil {
-		log.Error("config error :", err.Error())
-		return nil
-	}
+	// err := godotenv.Load("config.env")
+	// if err != nil {
+	// 	log.Error("config error :", err.Error())
+	// 	return nil
+	// }
 
 	app.DBUser = os.Getenv("DB_USER")
 	app.DBPwd = os.Getenv("DB_PWD")
