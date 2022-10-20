@@ -4,9 +4,16 @@ import (
 	"be_project2team4/config"
 	"be_project2team4/feature/posting/domain"
 	"be_project2team4/utils/jwt"
+	"context"
 	"log"
+	"mime/multipart"
 	"net/http"
 	"strings"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -24,7 +31,7 @@ func InitJWT(c *config.AppConfig) {
 
 func New(e *echo.Echo, srv domain.ServiceInterface) {
 	handler := postingHandler{srv: srv}
-	e.POST("/postings", handler.AddPosting(), middleware.JWT([]byte(key)))
+	e.POST("/postings", handler.AddPosting(), middleware.JWT([]byte(key))) //jangan lupa dikasih jwt soalnya habis di hapus buat coba
 	e.GET("/postings", handler.GetAllPosting())
 	e.GET("/postings/:id", handler.GetPosting())
 	e.GET("/postings/:id/comments", handler.GetPostingAllComment())
@@ -89,7 +96,41 @@ func (us *postingHandler) AddPosting() echo.HandlerFunc {
 			log.Println("Authorized request.")
 		}
 
-		var input PostingInsertRequestFormat
+		uploader = NewUploader()
+		// form, err := c.MultipartForm()
+		// if err != nil {
+		// 	return err
+		// }
+		// files := form.File["file"]
+		// for _, file := range files {
+		// 	src, err := file.Open()
+		// 	if err != nil {
+		// 		return err
+		// 	}
+		// 	defer src.Close()
+		// }
+		// res, err := upload(c, file.Filename )
+		content := c.FormValue("content")
+		file, err := c.FormFile("file")
+		if err != nil {
+			return err
+		}
+		src, err := file.Open()
+		if err != nil {
+			return err
+		}
+		defer src.Close()
+		resFile, err := upload(c, file.Filename, src)
+		if err == nil {
+			return err
+		}
+		log.Println(resFile)
+		log.Println(content)
+		var input domain.Core
+
+		resFile = input.Image_Url
+		content = input.Content
+
 		if err := c.Bind(&input); err != nil {
 			log.Println("Error Bind = ", err.Error())
 			return c.JSON(http.StatusBadRequest, FailResponse("cannot bind input"))
@@ -174,19 +215,32 @@ func (us *postingHandler) DeletePosting() echo.HandlerFunc {
 	}
 }
 
-// func (us *userHandler) UpdateProfile() (domain.Core, error) {
+var uploader *s3manager.Uploader
 
-// }
-// func (us *userHandler) Profile() (domain.Core, error) {
-// 	res, err := us.qry.Get(ID)
-// 	if err != nil {
-// 		log.Error(err.Error())
-// 		if strings.Contains(err.Error(), "table") {
-// 			return domain.Core{}, errors.New("database error")
-// 		} else if strings.Contains(err.Error(), "found") {
-// 			return domain.Core{}, errors.New("no data")
-// 		}
-// 	}
+func NewUploader() *s3manager.Uploader {
+	s3Config := &aws.Config{
+		Region:      aws.String("ap-southeast-1"),
+		Credentials: credentials.NewStaticCredentials("AKIARQA2KZ55LJN2AW7L", "zsp4Vtew2D/dTYjHQj48WNmSJUP/WJ3m2wm66qIm", ""),
+	}
+	s3Session := session.New(s3Config)
+	uploader := s3manager.NewUploader(s3Session)
+	return uploader
+}
 
-//		return res, nil
-//	}
+func upload(c echo.Context, filename string, src multipart.File) (string, error) {
+	logger := c.Logger()
+	log.Println("uploading")
+
+	upInput := &s3manager.UploadInput{
+		Bucket:      aws.String("projectalta"), // bucket's name
+		Key:         aws.String(filename),      // files destination location
+		Body:        src,                       // content of the file
+		ContentType: aws.String("image/jpg"),   // content type
+	}
+	res, err := uploader.UploadWithContext(context.Background(), upInput)
+	if err != nil {
+		logger.Fatal(err)
+		return "", err
+	}
+	return res.Location, nil
+}
