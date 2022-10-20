@@ -27,19 +27,12 @@ func New(e *echo.Echo, srv domain.ServiceInterface) {
 	e.GET("/postings", handler.GetAllPosting())
 	e.GET("/postings/:id", handler.GetPosting())
 	e.GET("/postings/:id/comments", handler.GetPostingAllComment())
-	e.PUT("/postings", handler.UpdatePosting(), middleware.JWT([]byte(key)))
+	e.PUT("/postings/:id", handler.UpdatePosting(), middleware.JWT([]byte(key)))
 	e.DELETE("/postings/:id", handler.DeletePosting(), middleware.JWT([]byte(key)))
 }
 
 func (us *postingHandler) GetAllPosting() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		// Check authorized request atau tidak dgn token
-		err := us.srv.IsAuthorized(c)
-		if err != nil {
-			return c.JSON(http.StatusUnauthorized, FailResponse(err.Error()))
-		} else {
-			log.Println("Authorized request.")
-		}
 
 		res, err := us.srv.GetAll()
 		//log.Println("\n\n\n res GET ALL =", res, "\n\n")
@@ -54,12 +47,12 @@ func (us *postingHandler) GetAllPosting() echo.HandlerFunc {
 func (us *postingHandler) GetPosting() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		// Check authorized request atau tidak dgn token
-		err := us.srv.IsAuthorized(c)
-		if err != nil {
-			return c.JSON(http.StatusUnauthorized, FailResponse(err.Error()))
-		} else {
-			log.Println("Authorized request.")
-		}
+		// err := us.srv.IsAuthorized(c)
+		// if err != nil {
+		// 	return c.JSON(http.StatusUnauthorized, FailResponse(err.Error()))
+		// } else {
+		// 	log.Println("Authorized request.")
+		// }
 
 		paramID := c.Param("id")
 		res, err := us.srv.Get(paramID)
@@ -74,12 +67,6 @@ func (us *postingHandler) GetPosting() echo.HandlerFunc {
 func (us *postingHandler) GetPostingAllComment() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		// Check authorized request atau tidak dgn token
-		err := us.srv.IsAuthorized(c)
-		if err != nil {
-			return c.JSON(http.StatusUnauthorized, FailResponse(err.Error()))
-		} else {
-			log.Println("Authorized request.")
-		}
 
 		paramID := c.Param("id")
 		res, err := us.srv.Get(paramID)
@@ -106,6 +93,7 @@ func (us *postingHandler) AddPosting() echo.HandlerFunc {
 			log.Println("Error Bind = ", err.Error())
 			return c.JSON(http.StatusBadRequest, FailResponse("cannot bind input"))
 		}
+		log.Println("\n\n\n input posting handler : ", input, "\n\n\n")
 		cnv := ToDomain(input)
 		res, err := us.srv.Insert(cnv)
 		if err != nil {
@@ -133,6 +121,8 @@ func (us *postingHandler) UpdatePosting() echo.HandlerFunc {
 			log.Println("Error Bind = ", err.Error())
 			return c.JSON(http.StatusBadRequest, FailResponse("cannot bind input"))
 		}
+		log.Println("\n\n\nid handler : ", paramID)
+		log.Println("\n\n\n input handler : ", input)
 
 		//log.Printf("\n\n\n isi input", &input, "\n\n\n")
 		cnv := ToDomain(input)

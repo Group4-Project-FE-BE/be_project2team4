@@ -5,16 +5,16 @@ import (
 )
 
 type PostingInsertRequestFormat struct {
-	Name_User string `json:"title" form:"title"`
-	Image_Url string `json:"author" form:"author"`
-	Content   string `json:"is_borrowed" form:"is_borrowed"`
+	Name_User string `json:"name_user" form:"name_user"`
+	Image_Url string `json:"image_url" form:"image_url"`
+	Content   string `json:"content" form:"content"`
 	IDUser    uint   `json:"id_user" form:"id_user"`
 }
 type PostingRequestFormat struct {
 	ID        uint   `json:"id" form:"id"`
-	Name_User string `json:"title" form:"title"`
-	Image_Url string `json:"author" form:"author"`
-	Content   string `json:"is_borrowed" form:"is_borrowed"`
+	Name_User string `json:"name_user" form:"name_user"`
+	Image_Url string `json:"image_url" form:"image_url"`
+	Content   string `json:"content" form:"content"`
 	IDUser    uint   `json:"id_user" form:"id_user"`
 }
 

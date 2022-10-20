@@ -2,6 +2,7 @@ package repository
 
 import (
 	"be_project2team4/feature/posting/domain"
+	"log"
 
 	"gorm.io/gorm"
 )
@@ -56,15 +57,19 @@ func (rq *repoQuery) Update(updatedData domain.Core, ID uint) (domain.Core, erro
 	if err != nil {
 		return domain.Core{}, err
 	}
+	log.Println("\n\n\nupdate Data", updatedData, "\n\n\n")
+	log.Println("\n\n\nID", ID, "\n\n\n")
+	log.Println("\n\n\nerr", err, "\n\n\n")
 
 	currentData.ID = ID
 	currentData.Name_User = updatedData.Name_User
 	currentData.Image_Url = updatedData.Image_Url
 	currentData.Content = updatedData.Content
 	currentData.IDUser = updatedData.IDUser
+	log.Println("\n\n\ncurrentData", currentData, "\n\n\n")
 
 	// log.Println("\n\n\n query isi update", updatedBookInput, "\n\n\n")
-	if err := rq.db.Where(&currentData.ID).Updates(&currentData.UpdatedAt).Error; err != nil {
+	if err2 := rq.db.Where(&currentData.ID).Save(&currentData).Error; err2 != nil {
 		return domain.Core{}, err
 	}
 	// selesai dari DB

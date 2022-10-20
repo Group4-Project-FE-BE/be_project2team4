@@ -45,7 +45,7 @@ func (bs *postingService) Insert(newData domain.Core) (domain.Core, error) {
 func (bs *postingService) Update(updatedData domain.Core, idPosting string) (domain.Core, error) {
 	loggo.Println("\n\n\nisi id", updatedData.ID)
 	idPostingUint, _ := strconv.Atoi(idPosting)
-	if updatedData.ID == 0 {
+	if idPostingUint == 0 {
 		return domain.Core{}, errors.New("Failed. Data id is empty.")
 	} else {
 		// validasi data yang di update ada atau ngga by id
@@ -106,6 +106,7 @@ func (bs *postingService) Get(ID string) (domain.Core, error) {
 
 	return res2, err2
 }
+
 func (bs *postingService) GetAll() ([]domain.Core, error) {
 	res, err := bs.qry.GetAll()
 	if err != nil {

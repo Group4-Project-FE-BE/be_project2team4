@@ -10,7 +10,7 @@ type PostingResponseFormat struct {
 	Name_User string `json:"name_user"`
 	Image_Url string `json:"image_url"`
 	Content   string `json:"content"`
-	IDUser    uint   `json:"id_ser"`
+	IDUser    uint   `json:"id_user"`
 }
 
 func SuccessResponse(msg string, data interface{}) map[string]interface{} {
