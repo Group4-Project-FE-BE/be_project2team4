@@ -19,6 +19,7 @@ type Repository interface {
 	Update(updatedData Core, ID uint) (Core, error)
 	Get(email string) (Core, error)
 	Delete(ID uint) (Core, error)
+	GetAll() ([]Core, error)
 }
 
 type Service interface {
@@ -28,5 +29,5 @@ type Service interface {
 	Profile(email string) (Core, error)
 	DeleteProfile(c echo.Context) (Core, error)
 	IsAuthorized(c echo.Context) error
-	ShowAllUser() (Core, error)
+	ShowAllUser() ([]Core, error)
 }

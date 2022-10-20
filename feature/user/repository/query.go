@@ -46,10 +46,10 @@ func (rq *repoQuery) GetUser(email string) (domain.Core, error) {
 
 }
 
-// Get implements domain.Repository
-func (*repoQuery) Get(email string) (domain.Core, error) {
-	panic("unimplemented")
-}
+// // Get implements domain.Repository
+// func (*repoQuery) Get(email string) (domain.Core, error) {
+// 	panic("unimplemented")
+// }
 
 // // Insert implements domain.Repository
 // func (rq *repoQuery) Insert(newUser domain.Core) (domain.Core, error) {
@@ -62,25 +62,27 @@ func (*repoQuery) Get(email string) (domain.Core, error) {
 // 	return ToDomain(cnv), nil
 // }
 
-// // GetAll implements domain.Repository
-// func (rq *repoQuery) GetAll() ([]domain.Core, error) {
-// 	var res []User
-// 	if err := rq.db.Find(&res).Error; err != nil {
-// 		log.Error("error on get all user", err.Error())
-// 		return []domain.Core{}, err
-// 	}
-// 	return ToDomainArray(res), nil
-// }
+// GetAll implements domain.Repository
+// get all user data to show user
+func (rq *repoQuery) GetAll() ([]domain.Core, error) {
+	var res []User
+	if err := rq.db.Find(&res).Error; err != nil {
+		log.Error("error on get all user", err.Error())
+		return []domain.Core{}, err
+	}
+	resFinal := ToDomainArray(res)
+	return resFinal, nil
+}
 
-// // Get implements domain.Repository
-// func (rq *repoQuery) Get(ID uint) (domain.Core, error) {
-// 	var res User
-// 	if err := rq.db.First(&res, "id =?", ID).Error; err != nil {
-// 		log.Error("error on getuserid", err.Error())
-// 		return domain.Core{}, err
-// 	}
-// 	return ToDomain(res), nil
-// }
+// Get implements domain.Repository
+func (rq *repoQuery) Get(Email string) (domain.Core, error) {
+	var res User
+	if err := rq.db.First(&res, "email =?", Email).Error; err != nil {
+		log.Error("error on getuserid", err.Error())
+		return domain.Core{}, err
+	}
+	return ToDomain(res), nil
+}
 
 // Update implements domain.Repository
 func (rq *repoQuery) Update(updatedData domain.Core, ID uint) (domain.Core, error) {

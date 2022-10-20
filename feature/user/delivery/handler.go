@@ -26,8 +26,8 @@ func New(e *echo.Echo, srv domain.Service) {
 
 	e.POST("/register", handler.Register())
 	e.POST("/login", handler.Login())
-	// e.GET("/users", handler.ShowAllUser())
-	// e.GET("/users/:id", handler.Profile())
+	e.GET("/users", handler.ShowAllUser())
+	e.GET("/users/:email", handler.Profile())
 	e.PUT("/users", handler.EditProfile(), middleware.JWT([]byte(key)))
 	e.DELETE("/users", handler.DeleteUser(), middleware.JWT([]byte(key)))
 }
