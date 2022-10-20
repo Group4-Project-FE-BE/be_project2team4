@@ -25,8 +25,8 @@ func New(e *echo.Echo, srv domain.Service) {
 
 	e.POST("/register", handler.Register())
 	e.POST("/login", handler.Login())
-	// e.GET("/users", handler.ShowAllUser())
-	// e.GET("/users/:id", handler.Profile())
+	e.GET("/users", handler.ShowAllUser())
+	e.GET("/users/:email", handler.Profile())
 	e.PUT("/users", handler.EditProfile(), middleware.JWT([]byte(key)))
 	e.DELETE("/users", handler.DeleteUser(), middleware.JWT([]byte(key)))
 }
@@ -107,5 +107,32 @@ func (us *userHandler) DeleteUser() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, FailResponses(err.Error()))
 		}
 		return c.JSON(http.StatusOK, SuccessDeleteResponses("Success Delete Data"))
+	}
+}
+
+func (us *userHandler) Profile() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		paramEmail := c.Param("email")
+		log.Println("email awal:", paramEmail)
+		// ID, err := strconv.Atoi(c.Param("email"))
+		res, err := us.srv.Profile(paramEmail)
+		log.Println("email", paramEmail)
+		log.Println("res", res)
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, FailResponses(err.Error()))
+		}
+
+		return c.JSON(http.StatusOK, SuccessResponses("sucses get userBy Email", ToResponse(res, "get", "")))
+	}
+}
+
+func (us *userHandler) ShowAllUser() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		res, err := us.srv.ShowAllUser()
+		if err != nil {
+			log.Println(err.Error())
+			return c.JSON(http.StatusInternalServerError, FailResponses(err.Error()))
+		}
+		return c.JSON(http.StatusOK, SuccessResponses("success get all user", ToResponse(res, "get", "")))
 	}
 }

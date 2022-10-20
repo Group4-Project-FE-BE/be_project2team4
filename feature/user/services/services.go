@@ -85,11 +85,6 @@ func (rs *repoService) Login(email, password string) (domain.Core, string, error
 // 	panic("unimplemented")
 // }
 
-// Profile implements domain.Service
-func (*repoService) Profile(email string) (domain.Core, error) {
-	panic("unimplemented")
-}
-
 // UpdateProfile implements domain.Service
 func (rs *repoService) UpdateProfile(updatedData domain.Core, c echo.Context) (domain.Core, error) {
 	userId, _ := jwt.ExtractToken(c)
@@ -134,4 +129,37 @@ func (rs *repoService) DeleteProfile(c echo.Context) (domain.Core, error) {
 		}
 	}
 	return domain.Core{}, nil
+}
+
+// ShowAllUser implements domain.Service
+func (rs *repoService) ShowAllUser() ([]domain.Core, error) {
+	res, err := rs.qry.GetAll()
+
+	if err == gorm.ErrRecordNotFound {
+		log.Error(err.Error())
+		return nil, gorm.ErrRecordNotFound
+	} else if err != nil {
+		log.Error(err.Error())
+		return nil, errors.New(config.DATABASE_ERROR)
+	}
+
+	if len(res) == 0 {
+		log.Info("no data")
+		return nil, errors.New(config.DATA_NOTFOUND)
+	}
+	return res, nil
+}
+
+// Profile implements domain.Service
+func (rs *repoService) Profile(Email string) (domain.Core, error) {
+	res, err := rs.qry.Get(Email)
+	if err != nil {
+		log.Error(err.Error())
+		if err == gorm.ErrRecordNotFound {
+			return domain.Core{}, gorm.ErrRecordNotFound
+		} else {
+			return domain.Core{}, errors.New(config.DATABASE_ERROR)
+		}
+	}
+	return res, nil
 }
