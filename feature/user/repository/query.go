@@ -2,6 +2,7 @@ package repository
 
 import (
 	"be_project2team4/feature/user/domain"
+	loggo "log"
 
 	"github.com/labstack/gommon/log"
 	"gorm.io/gorm"
@@ -88,10 +89,15 @@ func (rq *repoQuery) Get(Email string) (domain.Core, error) {
 func (rq *repoQuery) Update(updatedData domain.Core, ID uint) (domain.Core, error) {
 	var userData User
 
+	loggo.Println("\n\n\n query userdata : ", updatedData, "\n\n\n")
+	loggo.Println("\n\n\n query id paramm : ", ID, "\n\n\n")
+
 	err := rq.db.Where("id = ?", ID).First(&userData).Error
+	loggo.Println("\n\n\n res : ", err, "\n\n\n")
 	if err != nil {
 		return domain.Core{}, err
 	}
+	loggo.Println("\n\n\n userdata 2 : ", userData, "\n\n\n")
 
 	userData.ID = ID
 	userData.Email = updatedData.Email
@@ -102,9 +108,12 @@ func (rq *repoQuery) Update(updatedData domain.Core, ID uint) (domain.Core, erro
 	userData.Gender = updatedData.Gender
 	userData.Location = updatedData.Location
 
+	loggo.Println("\n\n\n userdata  2: ", userData, "\n\n\n")
+
 	if err := rq.db.Save(&userData).Error; err != nil {
 		return domain.Core{}, err
 	}
+	loggo.Println("\n\n\n errfinal : ", err, "\n\n\n")
 	return ToDomain(userData), nil
 }
 
