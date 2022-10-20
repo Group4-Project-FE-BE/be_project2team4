@@ -26,7 +26,7 @@ func New(e *echo.Echo, srv domain.Service) {
 	e.POST("/register", handler.Register())
 	e.POST("/login", handler.Login())
 	e.GET("/users", handler.ShowAllUser())
-	e.GET("/users/:email", handler.Profile())
+	e.GET("/users/:email", handler.Profile(), middleware.JWT([]byte(key)))
 	e.PUT("/users", handler.EditProfile(), middleware.JWT([]byte(key)))
 	e.DELETE("/users", handler.DeleteUser(), middleware.JWT([]byte(key)))
 }
@@ -112,6 +112,13 @@ func (us *userHandler) DeleteUser() echo.HandlerFunc {
 
 func (us *userHandler) Profile() echo.HandlerFunc {
 	return func(c echo.Context) error {
+		// Check authorized request atau tidak dgn token
+		err := us.srv.IsAuthorized(c)
+		if err != nil {
+			return c.JSON(http.StatusUnauthorized, FailResponses(err.Error()))
+		} else {
+			log.Println("Authorized request.")
+		}
 		paramEmail := c.Param("email")
 		log.Println("email awal:", paramEmail)
 		// ID, err := strconv.Atoi(c.Param("email"))
