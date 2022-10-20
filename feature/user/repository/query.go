@@ -84,20 +84,26 @@ func (*repoQuery) Get(email string) (domain.Core, error) {
 
 // Update implements domain.Repository
 func (rq *repoQuery) Update(updatedData domain.Core, ID uint) (domain.Core, error) {
-	var template User
-	var cnv User
-	cnv = FromDomain(updatedData)
+	var userData User
 
-	err := rq.db.Where("id = ?", ID).First(&template).Error
+	err := rq.db.Where("id = ?", ID).First(&userData).Error
 	if err != nil {
 		return domain.Core{}, err
 	}
 
-	cnv.ID = ID
-	if err := rq.db.Save(&cnv).Error; err != nil {
+	userData.ID = ID
+	userData.Email = updatedData.Email
+	userData.Password = updatedData.Password
+	userData.Name = updatedData.Name
+	userData.Phone = updatedData.Phone
+	userData.Bio = updatedData.Bio
+	userData.Gender = updatedData.Gender
+	userData.Location = updatedData.Location
+
+	if err := rq.db.Save(&userData).Error; err != nil {
 		return domain.Core{}, err
 	}
-	return ToDomain(cnv), nil
+	return ToDomain(userData), nil
 }
 
 // Delete implements domain.Repository
