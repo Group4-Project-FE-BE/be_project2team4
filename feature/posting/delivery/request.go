@@ -1,0 +1,42 @@
+package delivery
+
+import (
+	"be_project2team4/feature/posting/domain"
+)
+
+type PostingInsertRequestFormat struct {
+	Name_User string `json:"title" form:"title"`
+	Image_Url string `json:"author" form:"author"`
+	Content   string `json:"is_borrowed" form:"is_borrowed"`
+	IDUser    uint   `json:"id_user" form:"id_user"`
+}
+type PostingRequestFormat struct {
+	ID        uint   `json:"id" form:"id"`
+	Name_User string `json:"title" form:"title"`
+	Image_Url string `json:"author" form:"author"`
+	Content   string `json:"is_borrowed" form:"is_borrowed"`
+	IDUser    uint   `json:"id_user" form:"id_user"`
+}
+
+func ToDomain(i interface{}) domain.Core {
+	switch i.(type) {
+	case PostingInsertRequestFormat:
+		cnv := i.(PostingInsertRequestFormat)
+		return domain.Core{
+			Name_User: cnv.Name_User,
+			Image_Url: cnv.Image_Url,
+			Content:   cnv.Content,
+			IDUser:    cnv.IDUser,
+		}
+	case PostingRequestFormat:
+		cnv := i.(PostingRequestFormat)
+		return domain.Core{
+			ID:        cnv.ID,
+			Name_User: cnv.Name_User,
+			Image_Url: cnv.Image_Url,
+			Content:   cnv.Content,
+			IDUser:    cnv.IDUser,
+		}
+	}
+	return domain.Core{}
+}
