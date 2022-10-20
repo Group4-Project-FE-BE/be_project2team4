@@ -8,7 +8,6 @@ type PostingInsertRequestFormat struct {
 	Name_User string `json:"name_user" form:"name_user"`
 	Image_Url string `json:"image_url" form:"image_url"`
 	Content   string `json:"content" form:"content"`
-	IDUser    uint   `json:"id_user" form:"id_user"`
 }
 type PostingRequestFormat struct {
 	ID        uint   `json:"id" form:"id"`
@@ -26,7 +25,6 @@ func ToDomain(i interface{}) domain.Core {
 			Name_User: cnv.Name_User,
 			Image_Url: cnv.Image_Url,
 			Content:   cnv.Content,
-			IDUser:    cnv.IDUser,
 		}
 	case PostingRequestFormat:
 		cnv := i.(PostingRequestFormat)

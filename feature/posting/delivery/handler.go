@@ -3,6 +3,7 @@ package delivery
 import (
 	"be_project2team4/config"
 	"be_project2team4/feature/posting/domain"
+	"be_project2team4/utils/jwt"
 	"log"
 	"net/http"
 	"strings"
@@ -94,7 +95,9 @@ func (us *postingHandler) AddPosting() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, FailResponse("cannot bind input"))
 		}
 		log.Println("\n\n\n input posting handler : ", input, "\n\n\n")
+		id := jwt.ExtractIdToken(c)
 		cnv := ToDomain(input)
+		cnv.IDUser = id
 		res, err := us.srv.Insert(cnv)
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, FailResponse(err.Error()))
