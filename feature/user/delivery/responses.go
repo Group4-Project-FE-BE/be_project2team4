@@ -55,6 +55,15 @@ type EditUserResponseFormat struct {
 	Gender   string `json:"gender"`
 	Location string `json:"location"`
 }
+type GetUserResponseFormat struct {
+	ID       uint   `json:"id"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Phone    string `json:"phone"`
+	Bio      string `json:"bio"`
+	Gender   string `json:"gender"`
+	Location string `json:"location"`
+}
 
 func ToResponse(core interface{}, code string, token string) interface{} {
 	var res interface{}
@@ -69,6 +78,17 @@ func ToResponse(core interface{}, code string, token string) interface{} {
 	case "edit":
 		cnv := core.(domain.Core)
 		res = EditUserResponseFormat{
+			ID:       cnv.ID,
+			Name:     cnv.Name,
+			Email:    cnv.Email,
+			Phone:    cnv.Phone,
+			Bio:      cnv.Bio,
+			Gender:   cnv.Gender,
+			Location: cnv.Location,
+		}
+	case "get":
+		cnv := core.(domain.Core)
+		res = GetUserResponseFormat{
 			ID:       cnv.ID,
 			Name:     cnv.Name,
 			Email:    cnv.Email,

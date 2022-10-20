@@ -28,4 +28,5 @@ type Service interface {
 	Profile(email string) (Core, error)
 	DeleteProfile(c echo.Context) (Core, error)
 	IsAuthorized(c echo.Context) error
+	ShowAllUser() (Core, error)
 }

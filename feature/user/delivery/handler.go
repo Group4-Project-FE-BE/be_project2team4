@@ -5,6 +5,7 @@ import (
 	"be_project2team4/feature/user/domain"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -107,5 +108,28 @@ func (us *userHandler) DeleteUser() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, FailResponses(err.Error()))
 		}
 		return c.JSON(http.StatusOK, SuccessDeleteResponses("Success Delete Data"))
+	}
+}
+
+func (us *userHandler) Profile() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		ID, err := strconv.Atoi(c.Param("email"))
+		res, err := us.srv.Profile(string(ID))
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, FailResponses(err.Error()))
+		}
+
+		return c.JSON(http.StatusOK, SuccessResponses("sucses get userBy Email", res))
+	}
+}
+
+func (us *userHandler) ShowAllUser() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		res, err := us.srv.ShowAllUser()
+		if err != nil {
+			log.Println(err.Error())
+			return c.JSON(http.StatusInternalServerError, FailResponses(err.Error()))
+		}
+		return c.JSON(http.StatusOK, SuccessResponses("success get all user", ToResponse(res, "all", "")))
 	}
 }

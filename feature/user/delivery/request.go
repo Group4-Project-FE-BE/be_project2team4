@@ -21,6 +21,9 @@ type EditUserRequestFormat struct {
 	Gender   string `json:"gender"  form:"gender"`
 	Location string `json:"location"  form:"location"`
 }
+type GetUserRequestFormat struct {
+	Email string `json:"email"  form:"emai"`
+}
 
 func ToDomain(i interface{}) domain.Core {
 	switch i.(type) {
@@ -41,6 +44,9 @@ func ToDomain(i interface{}) domain.Core {
 			Gender:   cnv.Gender,
 			Location: cnv.Location,
 		}
+	case GetUserRequestFormat:
+		cnv := i.(GetUserRequestFormat)
+		return domain.Core{Email: cnv.Email}
 	}
 	return domain.Core{}
 }
