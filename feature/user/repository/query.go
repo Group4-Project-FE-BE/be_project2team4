@@ -66,7 +66,7 @@ func (rq *repoQuery) GetUser(email string) (domain.Core, error) {
 // get all user data to show user
 func (rq *repoQuery) GetAll() ([]domain.Core, error) {
 	var res []User
-	if err := rq.db.Find(&res).Error; err != nil {
+	if err := rq.db.Find(res).Error; err != nil {
 		log.Error("error on get all user", err.Error())
 		return []domain.Core{}, err
 	}
@@ -78,7 +78,7 @@ func (rq *repoQuery) GetAll() ([]domain.Core, error) {
 func (rq *repoQuery) Get(Email string) (domain.Core, error) {
 	var res User
 	if err := rq.db.First(&res, "email =?", Email).Error; err != nil {
-		log.Error("error on getuserid", err.Error())
+		log.Error("error on getuseremail", err.Error())
 		return domain.Core{}, err
 	}
 	return ToDomain(res), nil

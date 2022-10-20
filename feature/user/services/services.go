@@ -85,11 +85,6 @@ func (rs *repoService) Login(email, password string) (domain.Core, string, error
 // 	panic("unimplemented")
 // }
 
-// Profile implements domain.Service
-func (*repoService) Profile(email string) (domain.Core, error) {
-	panic("unimplemented")
-}
-
 // UpdateProfile implements domain.Service
 func (rs *repoService) UpdateProfile(updatedData domain.Core, c echo.Context) (domain.Core, error) {
 	userId, _ := jwt.ExtractToken(c)
@@ -156,7 +151,7 @@ func (rs *repoService) ShowAllUser() ([]domain.Core, error) {
 }
 
 // Profile implements domain.Service
-func (rs *repoService) GetUser(Email string) (domain.Core, error) {
+func (rs *repoService) Profile(Email string) (domain.Core, error) {
 	res, err := rs.qry.Get(Email)
 	if err != nil {
 		log.Error(err.Error())

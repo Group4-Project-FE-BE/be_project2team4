@@ -14,7 +14,7 @@ type LoginFormat struct {
 }
 type EditUserRequestFormat struct {
 	Name     string `json:"name"  form:"name"`
-	Email    string `json:"email"  form:"emai"`
+	Email    string `json:"email"  form:"email"`
 	Password string `json:"password"  form:"password"`
 	Phone    string `json:"phone"  form:"phone"`
 	Bio      string `json:"bio"  form:"bio"`
@@ -22,7 +22,7 @@ type EditUserRequestFormat struct {
 	Location string `json:"location"  form:"location"`
 }
 type GetUserRequestFormat struct {
-	Email string `json:"email"  form:"emai"`
+	Email string `json:"email"  form:"email"`
 }
 
 func ToDomain(i interface{}) domain.Core {
