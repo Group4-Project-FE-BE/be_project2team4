@@ -13,7 +13,14 @@ type PostingResponseFormat struct {
 	Image_Url string `json:"image_url"`
 	Content   string `json:"content"`
 	IDUser    uint   `json:"id_user"`
-	Comment   []delComment.ResponseFormat
+}
+type PostingCommentResponseFormat struct {
+	ID        uint                        `json:"id"`
+	Name_User string                      `json:"name_user"`
+	Image_Url string                      `json:"image_url"`
+	Content   string                      `json:"content"`
+	IDUser    uint                        `json:"id_user"`
+	Comments  []delComment.ResponseFormat `json:"comments"`
 }
 
 func SuccessResponse(msg string, data interface{}) map[string]interface{} {
@@ -75,7 +82,7 @@ func ToResponse(core interface{}, code string) interface{} {
 
 func ToResponsePostingComment(corePosting interface{}, coreComment interface{}) interface{} {
 	var res interface{}
-	var posting PostingResponseFormat
+	var posting PostingCommentResponseFormat
 	var arrComments []delComment.ResponseFormat
 	cnvPosting := corePosting.(domain.Core)
 	cnvComments := coreComment.([]domComment.Core)
@@ -94,13 +101,13 @@ func ToResponsePostingComment(corePosting interface{}, coreComment interface{}) 
 			})
 	}
 
-	posting = PostingResponseFormat{
+	posting = PostingCommentResponseFormat{
 		ID:        cnvPosting.ID,
 		Name_User: cnvPosting.Name_User,
 		Image_Url: cnvPosting.Image_Url,
 		Content:   cnvPosting.Content,
 		IDUser:    cnvPosting.IDUser,
-		Comment:   arrComments,
+		Comments:  arrComments,
 	}
 	res = posting
 

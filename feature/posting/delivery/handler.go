@@ -128,7 +128,9 @@ func (us *postingHandler) AddPosting() echo.HandlerFunc {
 			id := jwt.ExtractIdToken(c)
 			cnv := ToDomain(input)
 			cnv.IDUser = id
-			res, err := us.srv.Insert(cnv)
+			log.Println("\n\n\n input posting handler cnv : ", cnv, "\n\n\n")
+
+			res, err := us.srv.Insert(cnv, c)
 			if err != nil {
 				return c.JSON(http.StatusInternalServerError, FailResponse(err.Error()))
 			}
@@ -182,7 +184,7 @@ func (us *postingHandler) UpdatePosting() echo.HandlerFunc {
 			log.Println("\n\n\n input handler : ", input)
 
 			cnv := ToDomain(input)
-			res, err := us.srv.Update(cnv, paramID)
+			res, err := us.srv.Update(cnv, paramID, c)
 			if err != nil {
 				return c.JSON(http.StatusInternalServerError, FailResponse(err.Error()))
 			}
