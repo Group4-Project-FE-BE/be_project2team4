@@ -20,6 +20,11 @@ func SuccessResponse(msg string, data interface{}) map[string]interface{} {
 	}
 }
 
+type UploadResult struct {
+	Path    string `json:"path" form:"path"`
+	Content string `json:"content" form:"content"`
+}
+
 func SuccessDeleteResponse(msg string) map[string]interface{} {
 	return map[string]interface{}{
 		"message": msg,

@@ -89,62 +89,51 @@ func (us *postingHandler) GetPostingAllComment() echo.HandlerFunc {
 func (us *postingHandler) AddPosting() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		// Check authorized request atau tidak dgn token
+
 		err := us.srv.IsAuthorized(c)
 		if err != nil {
 			return c.JSON(http.StatusUnauthorized, FailResponse(err.Error()))
 		} else {
 			log.Println("Authorized request.")
 		}
-
 		uploader = NewUploader()
-		// form, err := c.MultipartForm()
-		// if err != nil {
-		// 	return err
-		// }
-		// files := form.File["file"]
-		// for _, file := range files {
-		// 	src, err := file.Open()
-		// 	if err != nil {
-		// 		return err
-		// 	}
-		// 	defer src.Close()
-		// }
-		// res, err := upload(c, file.Filename )
-		content := c.FormValue("content")
-		file, err := c.FormFile("file")
-		if err != nil {
-			return err
+		var input PostingInsertRequestFormat
+		//content := c.FormValue("content")
+		isSuccess := true
+		file, er := c.FormFile("file")
+		if er != nil {
+			isSuccess = false
+		} else {
+			src, err := file.Open()
+			if err != nil {
+				isSuccess = false
+			} else {
+				resFile, err := upload(c, file.Filename, src)
+				if err != nil {
+					return c.JSON(http.StatusBadRequest, FailResponse("Berhasil Upload Images"))
+				}
+				input.Image_Url = resFile
+			}
+			defer src.Close()
 		}
-		src, err := file.Open()
-		if err != nil {
-			return err
-		}
-		defer src.Close()
-		resFile, err := upload(c, file.Filename, src)
-		if err == nil {
-			return err
-		}
-		log.Println(resFile)
-		log.Println(content)
-		var input domain.Core
+		if isSuccess {
+			if err := c.Bind(&input); err != nil {
+				log.Println("Error Bind = ", err.Error())
+				return c.JSON(http.StatusBadRequest, FailResponse("cannot bind input"))
+			}
+			log.Println("\n\n\n input posting handler : ", input, "\n\n\n")
+			id := jwt.ExtractIdToken(c)
+			cnv := ToDomain(input)
+			cnv.IDUser = id
+			res, err := us.srv.Insert(cnv)
+			if err != nil {
+				return c.JSON(http.StatusInternalServerError, FailResponse(err.Error()))
+			}
+			return c.JSON(http.StatusCreated, SuccessResponse("Success add posting.", ToResponse(res, "posting")))
 
-		resFile = input.Image_Url
-		content = input.Content
-
-		if err := c.Bind(&input); err != nil {
-			log.Println("Error Bind = ", err.Error())
-			return c.JSON(http.StatusBadRequest, FailResponse("cannot bind input"))
-		}
-		log.Println("\n\n\n input posting handler : ", input, "\n\n\n")
-		id := jwt.ExtractIdToken(c)
-		cnv := ToDomain(input)
-		cnv.IDUser = id
-		res, err := us.srv.Insert(cnv)
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, FailResponse(err.Error()))
 		}
 
-		return c.JSON(http.StatusCreated, SuccessResponse("Success add posting.", ToResponse(res, "posting")))
+		return c.JSON(http.StatusBadRequest, FailResponse("fail upload file"))
 	}
 
 }

@@ -9,6 +9,7 @@ type PostingInsertRequestFormat struct {
 	Image_Url string `json:"image_url" form:"image_url"`
 	Content   string `json:"content" form:"content"`
 }
+
 type PostingRequestFormat struct {
 	ID        uint   `json:"id" form:"id"`
 	Name_User string `json:"name_user" form:"name_user"`
