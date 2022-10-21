@@ -4,6 +4,8 @@ import (
 	domComment "be_project2team4/feature/comment/domain"
 	repComment "be_project2team4/feature/comment/repository"
 	"be_project2team4/feature/posting/domain"
+	userDom "be_project2team4/feature/user/domain"
+	userRepo "be_project2team4/feature/user/repository"
 	"log"
 
 	"gorm.io/gorm"
@@ -54,6 +56,16 @@ func (rq *repoQuery) GetAll() ([]domain.Core, error) {
 	}
 	// selesai dari DB
 	res := ToDomainArray(resQry)
+	return res, nil
+}
+
+func (rq *repoQuery) GetUser(idUser uint) (userDom.Core, error) {
+	var resQry userRepo.User
+	if err := rq.db.Where("ID = ?", idUser).First(&resQry).Error; err != nil {
+		return userDom.Core{}, err
+	}
+	// selesai dari DB
+	res := userRepo.ToDomain(resQry)
 	return res, nil
 }
 

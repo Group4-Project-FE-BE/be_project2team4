@@ -24,11 +24,18 @@ func New(repo domain.RepositoryInterface) domain.ServiceInterface {
 	}
 }
 
-func (bs *postingService) Insert(newData domain.Core) (domain.Core, error) {
+func (bs *postingService) Insert(newData domain.Core, c echo.Context) (domain.Core, error) {
 	if IsEmptyValidation(newData) {
 		return domain.Core{}, errors.New("Failed. New data empty. ")
 	}
+	idUser := jwt.ExtractIdToken(c)
+	userData, err := bs.qry.GetUser(idUser)
+	if err != nil {
+		return domain.Core{}, errors.New("Failed. User not found. ")
+	}
 
+	newData.Name_User = userData.Name
+	newData.IDUser = idUser
 	res, err := bs.qry.Insert(newData)
 
 	if err != nil {
@@ -43,7 +50,7 @@ func (bs *postingService) Insert(newData domain.Core) (domain.Core, error) {
 	return res, nil
 }
 
-func (bs *postingService) Update(updatedData domain.Core, idPosting string) (domain.Core, error) {
+func (bs *postingService) Update(updatedData domain.Core, idPosting string, c echo.Context) (domain.Core, error) {
 	loggo.Println("\n\n\nisi id", updatedData.ID)
 	idPostingUint, _ := strconv.Atoi(idPosting)
 	if idPostingUint == 0 {
@@ -56,7 +63,14 @@ func (bs *postingService) Update(updatedData domain.Core, idPosting string) (dom
 		if _, err := bs.qry.Get(idPosting); err != nil {
 			return domain.Core{}, errors.New("Failed. Data not found. Add first.")
 		} else {
+			idUser := jwt.ExtractIdToken(c)
+			userData, err := bs.qry.GetUser(idUser)
+			if err != nil {
+				return domain.Core{}, errors.New("Failed. User not found. ")
+			}
 
+			updatedData.Name_User = userData.Name
+			updatedData.IDUser = idUser
 			resUpdate, err := bs.qry.Update(updatedData, uint(idPostingUint))
 
 			if err != nil {
