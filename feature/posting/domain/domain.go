@@ -1,6 +1,10 @@
 package domain
 
-import "github.com/labstack/echo/v4"
+import (
+	domComment "be_project2team4/feature/comment/domain"
+
+	"github.com/labstack/echo/v4"
+)
 
 type Core struct {
 	ID        uint
@@ -13,6 +17,7 @@ type Core struct {
 type RepositoryInterface interface {
 	GetAll() ([]Core, error)
 	Get(ID string) (Core, error)
+	GetPostingAllComment(ID string) (Core, []domComment.Core, error)
 	Insert(newData Core) (Core, error)
 	Update(updatedData Core, ID uint) (Core, error)
 	Delete(ID string) (Core, error)
@@ -20,6 +25,7 @@ type RepositoryInterface interface {
 type ServiceInterface interface {
 	GetAll() ([]Core, error)
 	Get(ID string) (Core, error)
+	GetPostingAllComment(ID string) (Core, []domComment.Core, error)
 	Insert(newData Core) (Core, error)
 	Update(updatedData Core, ID string) (Core, error)
 	Delete(ID string) (Core, error)

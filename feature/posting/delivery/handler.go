@@ -70,12 +70,15 @@ func (us *postingHandler) GetPostingAllComment() echo.HandlerFunc {
 		// Check authorized request atau tidak dgn token
 
 		paramID := c.Param("id")
-		res, err := us.srv.Get(paramID)
+		if paramID == "" {
+			return c.JSON(http.StatusInternalServerError, FailResponse("Failed. Id empty or not found."))
+		}
+		resPosting, resComments, err := us.srv.GetPostingAllComment(paramID)
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, FailResponse(err.Error()))
 		}
 
-		return c.JSON(http.StatusOK, SuccessResponse("Success get posting.", ToResponse(res, "posting")))
+		return c.JSON(http.StatusOK, SuccessResponse("Success get posting.", ToResponsePostingComment(resPosting, resComments)))
 	}
 }
 

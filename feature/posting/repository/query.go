@@ -1,6 +1,8 @@
 package repository
 
 import (
+	domComment "be_project2team4/feature/comment/domain"
+	repComment "be_project2team4/feature/comment/repository"
 	"be_project2team4/feature/posting/domain"
 	"log"
 
@@ -25,6 +27,24 @@ func (rq *repoQuery) Get(ID string) (domain.Core, error) {
 	// selesai dari DB
 	res := ToDomain(resQry)
 	return res, nil
+}
+
+func (rq *repoQuery) GetPostingAllComment(ID string) (domain.Core, []domComment.Core, error) {
+	// Get Posting Data by id
+	var resQryPosting Posting
+	if err := rq.db.Where("ID = ?", ID).First(&resQryPosting).Error; err != nil {
+		return domain.Core{}, []domComment.Core{}, err
+	}
+	// Get Commets Where id posting
+	var resQryComments []repComment.Comment
+	if err := rq.db.Where("id_posting = ?", ID).Find(&resQryComments).Error; err != nil {
+		return domain.Core{}, []domComment.Core{}, err
+	}
+
+	resPosting := ToDomain(resQryPosting)
+	resComments := repComment.ToDomainArray(resQryComments)
+
+	return resPosting, resComments, nil
 }
 
 func (rq *repoQuery) GetAll() ([]domain.Core, error) {

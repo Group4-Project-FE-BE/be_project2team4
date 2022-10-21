@@ -1,6 +1,7 @@
 package services
 
 import (
+	domComment "be_project2team4/feature/comment/domain"
 	"be_project2team4/feature/posting/domain"
 	"be_project2team4/utils/jwt"
 	"errors"
@@ -124,6 +125,24 @@ func (bs *postingService) GetAll() ([]domain.Core, error) {
 	}
 
 	return res, nil
+}
+
+func (bs *postingService) GetPostingAllComment(ID string) (domain.Core, []domComment.Core, error) {
+	resPosting, resComments, err := bs.qry.GetPostingAllComment(ID)
+	if err != nil {
+		log.Error(err.Error())
+		if strings.Contains(err.Error(), "table") {
+			return domain.Core{}, nil, errors.New("Failed. Database error")
+		} else if strings.Contains(err.Error(), "found") {
+			return domain.Core{}, nil, errors.New("Failed. No data")
+		} else {
+			log.Print("Log :", err.Error())
+			loggo.Println("Log : ", err.Error())
+			return domain.Core{}, nil, errors.New("Failed. Please check log.")
+		}
+	}
+
+	return resPosting, resComments, nil
 }
 
 func (bs *postingService) Delete(idPosting string) (domain.Core, error) {

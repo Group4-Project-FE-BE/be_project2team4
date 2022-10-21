@@ -49,3 +49,17 @@ func ToDomainArray(arrPosting []Posting) []domain.Core {
 
 	return res
 }
+
+// func ToDomainPostingComment(pPosting Posting, arrComment []repoComment.Comment) []domain.Core {
+// 	var res []domain.Core
+// 	for _, val := range arrPosting {
+// 		res = append(res, domain.Core{ID: val.ID,
+// 			Name_User: val.Name_User,
+// 			Image_Url: val.Image_Url,
+// 			Content:   val.Content,
+// 			IDUser:    val.IDUser,
+// 		})
+// 	}
+
+// 	return res
+// }
