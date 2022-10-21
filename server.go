@@ -2,6 +2,9 @@ package main
 
 import (
 	"be_project2team4/config"
+	dComment "be_project2team4/feature/comment/delivery"
+	rComment "be_project2team4/feature/comment/repository"
+	sComment "be_project2team4/feature/comment/services"
 	dPosting "be_project2team4/feature/posting/delivery"
 	rPosting "be_project2team4/feature/posting/repository"
 	sPosting "be_project2team4/feature/posting/services"
@@ -23,9 +26,11 @@ func main() {
 
 	mdlUser := rUser.New(db)
 	mdlPosting := rPosting.New(db)
+	mdlComment := rComment.New(db)
 
 	serUser := sUser.New(mdlUser)
 	serPosting := sPosting.New(mdlPosting)
+	serComment := sComment.New(mdlComment)
 
 	e.Pre(middleware.RemoveTrailingSlash())
 	e.Use(middleware.CORS())
@@ -36,6 +41,7 @@ func main() {
 
 	dUser.New(e, serUser)
 	dPosting.New(e, serPosting)
+	dComment.New(e, serComment)
 
 	log.Fatal(e.Start(":8000"))
 
