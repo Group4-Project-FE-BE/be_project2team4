@@ -51,7 +51,7 @@ func (rs *repoService) Register(newUser domain.Core) (domain.Core, error) {
 func (rs *repoService) Login(email, password string) (domain.Core, string, error) {
 
 	if strings.TrimSpace(email) == "" || strings.TrimSpace(password) == "" {
-		return domain.Core{}, "", errors.New("hp or password empty")
+		return domain.Core{}, "", errors.New("Email or password empty")
 	}
 
 	res, err := rs.qry.GetUser(email)
@@ -89,10 +89,16 @@ func (rs *repoService) Login(email, password string) (domain.Core, string, error
 func (rs *repoService) UpdateProfile(updatedData domain.Core, c echo.Context) (domain.Core, error) {
 	userId, _ := jwt.ExtractToken(c)
 	log.Printf("\n\n\nisi service = ", updatedData, "\n\n\n")
+
+	generate, err := bcrypt.GenerateFromPassword([]byte(updatedData.Password), bcrypt.DefaultCost)
+	if err != nil {
+		log.Error(err.Error())
+		return domain.Core{}, errors.New("cannot encript password")
+	}
+	updatedData.Password = string(generate)
+
 	res, err := rs.qry.Update(updatedData, userId)
-
 	log.Printf("\n\n\nisi service 2 = ", res, "\n\n\n")
-
 	if err != nil {
 		log.Error(err.Error())
 		if err == gorm.ErrRecordNotFound {
@@ -163,3 +169,29 @@ func (rs *repoService) Profile(Email string) (domain.Core, error) {
 	}
 	return res, nil
 }
+
+// // check update password
+// func  (rs *repoService) isPasswordMatch(email string, newPassword string) (domain.Core, error) {
+// 	if strings.TrimSpace(email) == "" || strings.TrimSpace(newPassword) == "" {
+// 		return domain.Core{}, errors.New("Email or password empty")
+// 	}
+
+// 	res, err := rs.qry.GetUser(email)
+// 	if err != nil {
+// 		log.Error(err.Error())
+// 		if strings.Contains(err.Error(), "table") {
+// 			return domain.Core{}, errors.New("Failed. Error database.")
+// 		} else if strings.Contains(err.Error(), "found") {
+// 			return domain.Core{}, errors.New("Failed. Email or Password not found.")
+// 		} else {
+// 			return domain.Core{}, errors.New("Failed. Process error. Please contact Admin")
+// 		}
+// 	} else {
+// 		// loggo.Println("res pass", res.Password, "\n\npass", password)
+// 		err := bcrypt.CompareHashAndPassword([]byte(res.Password), []byte(newPassword))
+// 		if err != nil {
+// 			return domain.Core{},errors.New("Failed. Incorrect Password.")
+// 		}
+// 	}
+// 	return res, nil
+// }
