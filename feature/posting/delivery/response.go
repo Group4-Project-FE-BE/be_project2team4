@@ -1,6 +1,8 @@
 package delivery
 
 import (
+	delComment "be_project2team4/feature/comment/delivery"
+	domComment "be_project2team4/feature/comment/domain"
 	"be_project2team4/feature/posting/domain"
 	"log"
 )
@@ -11,6 +13,7 @@ type PostingResponseFormat struct {
 	Image_Url string `json:"image_url"`
 	Content   string `json:"content"`
 	IDUser    uint   `json:"id_user"`
+	Comment   []delComment.ResponseFormat
 }
 
 func SuccessResponse(msg string, data interface{}) map[string]interface{} {
@@ -66,24 +69,40 @@ func ToResponse(core interface{}, code string) interface{} {
 				})
 		}
 		res = arrPosting
-	case "postingAllComments":
-		// pending, nunggu comment dibuat
-
-		// var arrPosting []PostingResponseFormat
-		// cnv := core.([]domain.Core)
-		// log.Println("\n\n isi res =", cnv, "\n\n")
-		// for _, val := range cnv {
-		// 	arrPosting = append(arrPosting,
-		// 		PostingResponseFormat{
-		// 			ID:        val.ID,
-		// 			Name_User: val.Name_User,
-		// 			Image_Url: val.Image_Url,
-		// 			Content:   val.Content,
-		// 			IDUser:    val.IDUser,
-		// 		})
-		// }
-		// res = arrPosting
 	}
+	return res
+}
+
+func ToResponsePostingComment(corePosting interface{}, coreComment interface{}) interface{} {
+	var res interface{}
+	var posting PostingResponseFormat
+	var arrComments []delComment.ResponseFormat
+	cnvPosting := corePosting.(domain.Core)
+	cnvComments := coreComment.([]domComment.Core)
+
+	log.Println("\n\n isi cnvPosting =", cnvPosting, "\n\n")
+	log.Println("\n\n isi cnvComments =", cnvComments, "\n\n")
+
+	for _, val := range cnvComments {
+		arrComments = append(arrComments,
+			delComment.ResponseFormat{
+				ID:            val.ID,
+				Name_User:     val.Name_User,
+				Comment_Value: val.Comment_Value,
+				IDUser:        val.IDUser,
+				IDPosting:     val.IDPosting,
+			})
+	}
+
+	posting = PostingResponseFormat{
+		ID:        cnvPosting.ID,
+		Name_User: cnvPosting.Name_User,
+		Image_Url: cnvPosting.Image_Url,
+		Content:   cnvPosting.Content,
+		IDUser:    cnvPosting.IDUser,
+		Comment:   arrComments,
+	}
+	res = posting
 
 	return res
 }
