@@ -150,22 +150,44 @@ func (us *postingHandler) UpdatePosting() echo.HandlerFunc {
 
 		var input PostingRequestFormat
 		paramID := c.Param("id")
-		if err := c.Bind(&input); err != nil {
-			log.Println("Error Bind = ", err.Error())
-			return c.JSON(http.StatusBadRequest, FailResponse("cannot bind input"))
-		}
-		log.Println("\n\n\nid handler : ", paramID)
-		log.Println("\n\n\n input handler : ", input)
+		uploader = NewUploader()
 
-		//log.Printf("\n\n\n isi input", &input, "\n\n\n")
-		cnv := ToDomain(input)
-		//log.Printf("\n\n\n isi cnv", cnv, "\n\n\n")
-		res, err := us.srv.Update(cnv, paramID)
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, FailResponse(err.Error()))
+		isSuccess := true
+		file, er := c.FormFile("file")
+		if er != nil {
+			isSuccess = false
+		} else {
+			src, err := file.Open()
+			if err != nil {
+				isSuccess = false
+			} else {
+				resFile, err := upload(c, file.Filename, src)
+				if err != nil {
+					return c.JSON(http.StatusBadRequest, FailResponse("Berhasil Upload Images"))
+				}
+				input.Image_Url = resFile
+			}
+			defer src.Close()
 		}
+		if isSuccess {
 
-		return c.JSON(http.StatusCreated, SuccessResponse("Success update posting.", ToResponse(res, "posting")))
+			if err := c.Bind(&input); err != nil {
+				log.Println("Error Bind = ", err.Error())
+				return c.JSON(http.StatusBadRequest, FailResponse("cannot bind input"))
+			}
+			log.Println("\n\n\nid handler : ", paramID)
+			log.Println("\n\n\n input handler : ", input)
+
+			cnv := ToDomain(input)
+			res, err := us.srv.Update(cnv, paramID)
+			if err != nil {
+				return c.JSON(http.StatusInternalServerError, FailResponse(err.Error()))
+			}
+
+			return c.JSON(http.StatusCreated, SuccessResponse("Success update posting.", ToResponse(res, "posting")))
+
+		}
+		return c.JSON(http.StatusBadRequest, FailResponse("fail upload file"))
 	}
 }
 
@@ -221,10 +243,10 @@ func upload(c echo.Context, filename string, src multipart.File) (string, error)
 	log.Println("uploading")
 
 	upInput := &s3manager.UploadInput{
-		Bucket:      aws.String("projectalta"), // bucket's name
-		Key:         aws.String(filename),      // files destination location
-		Body:        src,                       // content of the file
-		ContentType: aws.String("image/jpg"),   // content type
+		Bucket: aws.String("projectalta"), // bucket's name
+		Key:    aws.String(filename),      // files destination location
+		Body:   src,                       // content of the file
+		//ContentType: aws.String("image/jpg"),   // content type
 	}
 	res, err := uploader.UploadWithContext(context.Background(), upInput)
 	if err != nil {
