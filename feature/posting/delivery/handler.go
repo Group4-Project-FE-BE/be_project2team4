@@ -4,9 +4,16 @@ import (
 	"be_project2team4/config"
 	"be_project2team4/feature/posting/domain"
 	"be_project2team4/utils/jwt"
+	"context"
 	"log"
+	"mime/multipart"
 	"net/http"
 	"strings"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -24,7 +31,7 @@ func InitJWT(c *config.AppConfig) {
 
 func New(e *echo.Echo, srv domain.ServiceInterface) {
 	handler := postingHandler{srv: srv}
-	e.POST("/postings", handler.AddPosting(), middleware.JWT([]byte(key)))
+	e.POST("/postings", handler.AddPosting(), middleware.JWT([]byte(key))) //jangan lupa dikasih jwt soalnya habis di hapus buat coba
 	e.GET("/postings", handler.GetAllPosting())
 	e.GET("/postings/:id", handler.GetPosting())
 	e.GET("/postings/:id/comments", handler.GetPostingAllComment())
@@ -82,28 +89,51 @@ func (us *postingHandler) GetPostingAllComment() echo.HandlerFunc {
 func (us *postingHandler) AddPosting() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		// Check authorized request atau tidak dgn token
+
 		err := us.srv.IsAuthorized(c)
 		if err != nil {
 			return c.JSON(http.StatusUnauthorized, FailResponse(err.Error()))
 		} else {
 			log.Println("Authorized request.")
 		}
-
+		uploader = NewUploader()
 		var input PostingInsertRequestFormat
-		if err := c.Bind(&input); err != nil {
-			log.Println("Error Bind = ", err.Error())
-			return c.JSON(http.StatusBadRequest, FailResponse("cannot bind input"))
+		//content := c.FormValue("content")
+		isSuccess := true
+		file, er := c.FormFile("file")
+		if er != nil {
+			isSuccess = false
+		} else {
+			src, err := file.Open()
+			if err != nil {
+				isSuccess = false
+			} else {
+				resFile, err := upload(c, file.Filename, src)
+				if err != nil {
+					return c.JSON(http.StatusBadRequest, FailResponse("Berhasil Upload Images"))
+				}
+				input.Image_Url = resFile
+			}
+			defer src.Close()
 		}
-		log.Println("\n\n\n input posting handler : ", input, "\n\n\n")
-		id := jwt.ExtractIdToken(c)
-		cnv := ToDomain(input)
-		cnv.IDUser = id
-		res, err := us.srv.Insert(cnv)
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, FailResponse(err.Error()))
+		if isSuccess {
+			if err := c.Bind(&input); err != nil {
+				log.Println("Error Bind = ", err.Error())
+				return c.JSON(http.StatusBadRequest, FailResponse("cannot bind input"))
+			}
+			log.Println("\n\n\n input posting handler : ", input, "\n\n\n")
+			id := jwt.ExtractIdToken(c)
+			cnv := ToDomain(input)
+			cnv.IDUser = id
+			res, err := us.srv.Insert(cnv)
+			if err != nil {
+				return c.JSON(http.StatusInternalServerError, FailResponse(err.Error()))
+			}
+			return c.JSON(http.StatusCreated, SuccessResponse("Success add posting.", ToResponse(res, "posting")))
+
 		}
 
-		return c.JSON(http.StatusCreated, SuccessResponse("Success add posting.", ToResponse(res, "posting")))
+		return c.JSON(http.StatusBadRequest, FailResponse("fail upload file"))
 	}
 
 }
@@ -120,22 +150,44 @@ func (us *postingHandler) UpdatePosting() echo.HandlerFunc {
 
 		var input PostingRequestFormat
 		paramID := c.Param("id")
-		if err := c.Bind(&input); err != nil {
-			log.Println("Error Bind = ", err.Error())
-			return c.JSON(http.StatusBadRequest, FailResponse("cannot bind input"))
-		}
-		log.Println("\n\n\nid handler : ", paramID)
-		log.Println("\n\n\n input handler : ", input)
+		uploader = NewUploader()
 
-		//log.Printf("\n\n\n isi input", &input, "\n\n\n")
-		cnv := ToDomain(input)
-		//log.Printf("\n\n\n isi cnv", cnv, "\n\n\n")
-		res, err := us.srv.Update(cnv, paramID)
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, FailResponse(err.Error()))
+		isSuccess := true
+		file, er := c.FormFile("file")
+		if er != nil {
+			isSuccess = false
+		} else {
+			src, err := file.Open()
+			if err != nil {
+				isSuccess = false
+			} else {
+				resFile, err := upload(c, file.Filename, src)
+				if err != nil {
+					return c.JSON(http.StatusBadRequest, FailResponse("Berhasil Upload Images"))
+				}
+				input.Image_Url = resFile
+			}
+			defer src.Close()
 		}
+		if isSuccess {
 
-		return c.JSON(http.StatusCreated, SuccessResponse("Success update posting.", ToResponse(res, "posting")))
+			if err := c.Bind(&input); err != nil {
+				log.Println("Error Bind = ", err.Error())
+				return c.JSON(http.StatusBadRequest, FailResponse("cannot bind input"))
+			}
+			log.Println("\n\n\nid handler : ", paramID)
+			log.Println("\n\n\n input handler : ", input)
+
+			cnv := ToDomain(input)
+			res, err := us.srv.Update(cnv, paramID)
+			if err != nil {
+				return c.JSON(http.StatusInternalServerError, FailResponse(err.Error()))
+			}
+
+			return c.JSON(http.StatusCreated, SuccessResponse("Success update posting.", ToResponse(res, "posting")))
+
+		}
+		return c.JSON(http.StatusBadRequest, FailResponse("fail upload file"))
 	}
 }
 
@@ -174,19 +226,32 @@ func (us *postingHandler) DeletePosting() echo.HandlerFunc {
 	}
 }
 
-// func (us *userHandler) UpdateProfile() (domain.Core, error) {
+var uploader *s3manager.Uploader
 
-// }
-// func (us *userHandler) Profile() (domain.Core, error) {
-// 	res, err := us.qry.Get(ID)
-// 	if err != nil {
-// 		log.Error(err.Error())
-// 		if strings.Contains(err.Error(), "table") {
-// 			return domain.Core{}, errors.New("database error")
-// 		} else if strings.Contains(err.Error(), "found") {
-// 			return domain.Core{}, errors.New("no data")
-// 		}
-// 	}
+func NewUploader() *s3manager.Uploader {
+	s3Config := &aws.Config{
+		Region:      aws.String("ap-southeast-1"),
+		Credentials: credentials.NewStaticCredentials("AKIARQA2KZ55LJN2AW7L", "zsp4Vtew2D/dTYjHQj48WNmSJUP/WJ3m2wm66qIm", ""),
+	}
+	s3Session := session.New(s3Config)
+	uploader := s3manager.NewUploader(s3Session)
+	return uploader
+}
 
-//		return res, nil
-//	}
+func upload(c echo.Context, filename string, src multipart.File) (string, error) {
+	logger := c.Logger()
+	log.Println("uploading")
+
+	upInput := &s3manager.UploadInput{
+		Bucket: aws.String("projectalta"), // bucket's name
+		Key:    aws.String(filename),      // files destination location
+		Body:   src,                       // content of the file
+		//ContentType: aws.String("image/jpg"),   // content type
+	}
+	res, err := uploader.UploadWithContext(context.Background(), upInput)
+	if err != nil {
+		logger.Fatal(err)
+		return "", err
+	}
+	return res.Location, nil
+}

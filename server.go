@@ -20,7 +20,6 @@ import (
 
 func main() {
 	e := echo.New()
-
 	//pemanggilan config
 	cfg := config.NewConfig()
 	db := database.InitDB(cfg)
