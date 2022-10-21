@@ -2,6 +2,7 @@ package database
 
 import (
 	"be_project2team4/config"
+	rComment "be_project2team4/feature/comment/repository"
 	rPosting "be_project2team4/feature/posting/repository"
 	rUser "be_project2team4/feature/user/repository"
 	"fmt"
@@ -44,4 +45,5 @@ func InitDB(c *config.AppConfig) *gorm.DB {
 func migrateDB(db *gorm.DB) {
 	db.AutoMigrate(&rUser.User{})
 	db.AutoMigrate(&rPosting.Posting{})
+	db.AutoMigrate(&rComment.Comment{})
 }
