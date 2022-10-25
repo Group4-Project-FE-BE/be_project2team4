@@ -236,7 +236,7 @@ var uploader *s3manager.Uploader
 func NewUploader() *s3manager.Uploader {
 	s3Config := &aws.Config{
 		Region:      aws.String("ap-southeast-1"),
-		Credentials: credentials.NewStaticCredentials("AKIARQA2KZ55LJN2AW7L", "zsp4Vtew2D/dTYjHQj48WNmSJUP/WJ3m2wm66qIm", ""),
+		Credentials: credentials.NewStaticCredentials("", "", ""),
 	}
 	s3Session := session.New(s3Config)
 	uploader := s3manager.NewUploader(s3Session)
